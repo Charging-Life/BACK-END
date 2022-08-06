@@ -3,10 +3,7 @@ package com.example.charging_life.station.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.*;
 
 @Getter
 @Entity
@@ -22,7 +19,7 @@ public class ChargingStation {
     private Double lat;
     private Double lng;
     private String useTime;
-    @JoinColumn(name = "business_id")
+    @ManyToOne @JoinColumn(name = "business_id")
     private Business business;
     private Boolean parkingFree;
     private String note;

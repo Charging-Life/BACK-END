@@ -4,10 +4,7 @@ import com.example.charging_life.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.*;
 
 @Getter
 @Entity
@@ -17,7 +14,7 @@ public class Car {
     @Id @GeneratedValue
     private Long id;
     private String car;
-    @JoinColumn(name = "member_id")
+    @ManyToOne @JoinColumn(name = "member_id")
     private Member member;
 
     public Car(String car, Member member) {
