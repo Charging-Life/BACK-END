@@ -3,20 +3,19 @@ package com.example.charging_life.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@RestController
+@RestControllerAdvice
 public class ExceptionAdvice {
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ExceptionResponse> exceptionHandler(final CustomException e){
-        StackTraceElement[] stackTraceElements = e.getStackTrace();
-        log.error(e.getMessage());
+    public ResponseEntity<ExceptionResponse> exceptionHandler(CustomException e){
+        ExceptionEnum exceptionEnum = e.getExceptionEnum();
         return ResponseEntity
-                .status(e.getError().getStatus())
+                .status(exceptionEnum.getStatus())
                 .body(ExceptionResponse.builder()
-                        .errorCode(e.getError().getCode())
-                        .description(e.getMessage())
+                        .errorCode(exceptionEnum.getCode())
+                        .description(exceptionEnum.getDescription())
                         .build());
     }
 }

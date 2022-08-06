@@ -1,12 +1,10 @@
 package com.example.charging_life.exception;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class CustomException extends RuntimeException{
-    private ExceptionEnum error;
-    public CustomException(ExceptionEnum e){
-        super(e.getDescription());
-        this.error=e;
-    }
+    private ExceptionEnum exceptionEnum;
 }
