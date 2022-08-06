@@ -1,5 +1,6 @@
 package com.example.charging_life.station.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +27,7 @@ public class ChargingStation {
     private Boolean limitYn;
     private String limitDetail;
 
+    @Builder
     public ChargingStation(String statNm, Integer statId, String address, String location,
                            Double lat, Double lng, String useTime, Business business, Boolean parkingFree,
                            String note, Boolean limitYn, String limitDetail) {
