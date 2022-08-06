@@ -1,12 +1,10 @@
 package com.example.charging_life.station.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.*;
 
 @Getter
 @Entity
@@ -16,20 +14,21 @@ public class ChargingStation {
     @Id @GeneratedValue
     private Long id;
     private String statNm;
-    private Integer statId;
+    private String statId;
     private String address;
     private String location;
     private Double lat;
     private Double lng;
     private String useTime;
-    @JoinColumn(name = "business_id")
+    @OneToOne(fetch = FetchType.LAZY) @JoinColumn(name = "business_id")
     private Business business;
     private Boolean parkingFree;
     private String note;
     private Boolean limitYn;
     private String limitDetail;
 
-    public ChargingStation(String statNm, Integer statId, String address, String location,
+    @Builder
+    public ChargingStation(String statNm, String statId, String address, String location,
                            Double lat, Double lng, String useTime, Business business, Boolean parkingFree,
                            String note, Boolean limitYn, String limitDetail) {
         this.statNm = statNm;

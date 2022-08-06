@@ -3,10 +3,7 @@ package com.example.charging_life.station.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.*;
 
 @Getter
 @Entity
@@ -15,7 +12,7 @@ public class Charger {
 
     @Id @GeneratedValue
     private Long Id;
-    @JoinColumn(name = "charging_station_id")
+    @OneToOne(fetch = FetchType.LAZY) @JoinColumn(name = "charging_station_id")
     private ChargingStation chargingStation;
     private Integer chargerId;
     private String chargerType;
