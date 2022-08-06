@@ -126,4 +126,13 @@ public class TokenService {
             }
         }
     }
+
+    @Transactional
+    public TokenDto makeToken(Member member) {
+        String accessJws = makeAccessJws(member);
+        String refreshJws = makeRefreshJws();
+        Token token = jpaTokenRepo.findByMember(member);
+        token.updateToken(refreshJws);
+        return new TokenDto(accessJws);
+    }
 }
