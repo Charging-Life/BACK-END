@@ -14,7 +14,7 @@ public class Car {
     @Id @GeneratedValue
     private Long id;
     private String car;
-    @OneToOne(fetch = FetchType.LAZY) @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     public Car(String car, Member member) {
