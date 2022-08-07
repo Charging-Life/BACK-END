@@ -23,8 +23,8 @@ public class MemberService implements UserDetailsService {
         jpaMemberRepo.save(member);
     }
 
-    public Member findMemberByEmail(LoginReqDto loginReqDto) {
-        Member member = jpaMemberRepo.findByEmail(loginReqDto.getEmail())
+    public Member findMemberByEmail(String email) {
+        Member member = jpaMemberRepo.findByEmail(email)
                 .orElseThrow(()->new CustomException(ExceptionEnum.EmailNotMatched));
         return member;
     }

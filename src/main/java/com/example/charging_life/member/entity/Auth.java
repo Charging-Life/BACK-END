@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum Auth {
     ADMIN("ADMIN"),
-    USER("MEMBER");
+    USER("USER");
     private String role;
     private Auth(String role){
         this.role=role;

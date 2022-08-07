@@ -1,17 +1,18 @@
 package com.example.charging_life.member.entity;
 
 import com.example.charging_life.member.entity.Auth;
+import com.example.charging_life.station.entity.Car;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.Mapping;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Entity
@@ -25,16 +26,17 @@ public class Member implements UserDetails {
     private String name;
     private String phone;
     private Auth auth;
-    private Long carId;
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Car> cars = new ArrayList<>();
 
     @Builder
-    public Member(String email, String password, String name, String phone, Auth auth, Long carId) {
+    public Member(String email, String password, String name, String phone, Auth auth, Car car) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.phone = phone;
         this.auth = auth;
-        this.carId = carId;
+        this.cars.add(car);
     }
 
     @Override

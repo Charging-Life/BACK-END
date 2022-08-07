@@ -4,6 +4,7 @@ import com.example.charging_life.exception.CustomException;
 import com.example.charging_life.exception.ExceptionEnum;
 import com.example.charging_life.member.dto.LoginReqDto;
 import com.example.charging_life.member.dto.MemberReqDto;
+import com.example.charging_life.member.dto.MemberResDto;
 import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.token.Token;
 import com.example.charging_life.token.TokenDto;
@@ -12,9 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,9 +35,18 @@ public class MemberController {
     @Operation(summary = "로그인", description = "성공하면 access token, refresh token")
     @PostMapping("/member/login")
     public ResponseEntity<TokenDto> login(@RequestBody LoginReqDto loginReqDto) {
-        Member member = memberService.findMemberByEmail(loginReqDto);
+        Member member = memberService.findMemberByEmail(loginReqDto.getEmail());
         if(passwordEncoder.matches(loginReqDto.getPassword(),member.getPassword()))
             return ResponseEntity.ok(tokenService.makeToken(member));
         else throw new CustomException(ExceptionEnum.PasswordNotMatched);
+    }
+
+    @Operation(summary = "사용자 회원정보 조회")
+    @GetMapping("/member/user")
+    public ResponseEntity<MemberResDto> viewUserInfo(@RequestHeader(name = "Authorization") String accessToken) {
+        String email = tokenService.getEmailFromToken(accessToken);
+        Member member = memberService.findMemberByEmail(email);
+        return ResponseEntity.ok(new MemberResDto(member));
+
     }
 }
