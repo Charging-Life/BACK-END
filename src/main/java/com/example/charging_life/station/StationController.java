@@ -19,37 +19,9 @@ public class StationController {
 
     private final StationService stationService;
 
-    /*@GetMapping("/station")
-    public String index(){
-        return "index";
-    }*/
-
     @GetMapping("/station")
-    public String chargingStationApi() throws IOException {
-        StringBuilder result = new StringBuilder();
-
-            String apiUrl = "http://apis.data.go.kr/B552584/EvCharger/getChargerInfo?" +
-                "serviceKey=" + key +
-                "&numOfRows=10" +
-                "&pageNo=9999" +
-                "&dataType=JSON";
-            URL url = new URL(apiUrl);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-
-            BufferedReader br;
-
-            br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
-            String returnLine;
-
-            while ((returnLine = br.readLine()) != null){
-                result.append(returnLine + "\n\r");
-            }
-
-             urlConnection.disconnect();
-
-            stationService.init(result.toString());
-
-        return result.toString();
+    public String getChargingStationApi() throws IOException {
+        stationService.saveChargingStationData();
+        return "success";
     }
 }
