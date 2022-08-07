@@ -133,6 +133,6 @@ public class TokenService {
         String refreshJws = makeRefreshJws();
         Token token = jpaTokenRepo.findByMember(member);
         token.updateToken(refreshJws);
-        return new TokenDto(accessJws);
+        return new TokenDto(accessJws,refreshJws);
     }
 }
