@@ -1,9 +1,11 @@
 package com.example.charging_life.station.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Entity
@@ -13,7 +15,9 @@ public class ChargingStation {
     @Id @GeneratedValue
     private Long id;
     private String statNm;
-    private Integer statId;
+    @OneToMany(mappedBy = "chargingStation")
+    private List<Charger> charger;
+    private String statId;
     private String address;
     private String location;
     private Double lat;
@@ -26,10 +30,13 @@ public class ChargingStation {
     private Boolean limitYn;
     private String limitDetail;
 
-    public ChargingStation(String statNm, Integer statId, String address, String location,
-                           Double lat, Double lng, String useTime, Business business, Boolean parkingFree,
-                           String note, Boolean limitYn, String limitDetail) {
+    @Builder
+    public ChargingStation(String statNm, List<Charger> charger, String statId,
+                           String address, String location, Double lat, Double lng,
+                           String useTime, Business business, Boolean parkingFree, String note,
+                           Boolean limitYn, String limitDetail) {
         this.statNm = statNm;
+        this.charger = charger;
         this.statId = statId;
         this.address = address;
         this.location = location;
