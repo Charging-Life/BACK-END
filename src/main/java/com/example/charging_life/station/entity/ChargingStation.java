@@ -15,13 +15,9 @@ public class ChargingStation {
     @Id @GeneratedValue
     private Long id;
     private String statNm;
-<<<<<<< HEAD
-    private Integer statId;
-=======
     @OneToMany(mappedBy = "chargingStation")
     private List<Charger> charger;
     private String statId;
->>>>>>> e8ab9d9 (save api data at ChargingStation & Charger)
     private String address;
     private String location;
     private Double lat;
@@ -35,16 +31,10 @@ public class ChargingStation {
     private String limitDetail;
 
     @Builder
-<<<<<<< HEAD
-    public ChargingStation(String statNm, Integer statId, String address, String location,
-                           Double lat, Double lng, String useTime, Business business, Boolean parkingFree,
-                           String note, Boolean limitYn, String limitDetail) {
-=======
     public ChargingStation(String statNm, List<Charger> charger, String statId,
                            String address, String location, Double lat, Double lng,
                            String useTime, Business business, Boolean parkingFree, String note,
                            Boolean limitYn, String limitDetail) {
->>>>>>> e8ab9d9 (save api data at ChargingStation & Charger)
         this.statNm = statNm;
         this.charger = charger;
         this.statId = statId;
