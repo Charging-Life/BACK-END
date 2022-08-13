@@ -1,6 +1,7 @@
 package com.example.charging_life.member.entity;
 
 import com.example.charging_life.member.entity.Auth;
+import com.example.charging_life.station.entity.Business;
 import com.example.charging_life.station.entity.Car;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +29,8 @@ public class Member implements UserDetails {
     private Auth auth;
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Car> cars = new ArrayList<>();
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<MemberBusiness> businesses = new ArrayList<>();
 
     @Builder
     public Member(String email, String password, String name, String phone, Auth auth, Car car) {
@@ -37,6 +40,10 @@ public class Member implements UserDetails {
         this.phone = phone;
         this.auth = auth;
         this.cars.add(car);
+    }
+
+    public void addBusiness(MemberBusiness memberBusiness) {
+        this.businesses.add(memberBusiness);
     }
 
     @Override
