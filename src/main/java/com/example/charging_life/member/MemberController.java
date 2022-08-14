@@ -63,9 +63,9 @@ public class MemberController {
         return ResponseEntity.ok(new MemberResDto(member));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(summary = "관리자 회원정보 조회")
-    @GetMapping("/member/admin")
+    @PreAuthorize("hasAuthority('MANAGER')")
+    @Operation(summary = "충전소 관리자 회원정보 조회")
+    @GetMapping("/member/manager")
     public ResponseEntity<MemberResDto> viewAdminInfo(@RequestHeader(name = "Authorization") String accessToken) {
         String email = tokenService.getEmailFromToken(accessToken);
         Member member = memberService.findMemberByEmail(email);
