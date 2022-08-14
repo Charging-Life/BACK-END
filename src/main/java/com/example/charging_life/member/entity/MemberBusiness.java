@@ -1,10 +1,12 @@
 package com.example.charging_life.member.entity;
 
 import com.example.charging_life.station.entity.Business;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Getter
 @Entity
 @NoArgsConstructor
 public class MemberBusiness {

@@ -1,14 +1,12 @@
 package com.example.charging_life.member.entity;
 
-import com.example.charging_life.member.entity.Auth;
-import com.example.charging_life.station.entity.Business;
+
 import com.example.charging_life.station.entity.Car;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.Mapping;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -26,6 +24,7 @@ public class Member implements UserDetails {
     private String password;
     private String name;
     private String phone;
+    @Enumerated(value = EnumType.STRING)
     private Auth auth;
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Car> cars = new ArrayList<>();

@@ -1,6 +1,6 @@
 package com.example.charging_life.station.entity;
 
-import com.example.charging_life.member.entity.Member;
+
 import com.example.charging_life.member.entity.MemberBusiness;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +20,7 @@ public class Business {
     private String business;
     private String businessCall;
     private String businessImg;
-    @OneToMany(mappedBy = "business")
+    @OneToMany(mappedBy = "business", fetch = FetchType.LAZY)
     private List<MemberBusiness> memberBusinesses = new ArrayList<>();
 
     public Business(String businessId, String business, String businessCall, String businessImg) {
