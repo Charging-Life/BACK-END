@@ -20,13 +20,13 @@ public class MemberReqDto {
         this.phone = phone;
     }
 
-    public Member toEntity(String password){
+    public Member toEntity(String password, Auth auth){
         return Member.builder()
                 .email(email)
                 .name(name)
                 .password(password)
                 .phone(phone)
-                .auth(Auth.USER)
+                .auth(auth)
                 .build();
 
     }

@@ -28,7 +28,18 @@ public class MemberController {
     @PostMapping("/member/new")
     public void createMember(@RequestBody MemberReqDto memberRequestDto) {
         String encodePassword = passwordEncoder.encode(memberRequestDto.getPassword());
-        Member member = memberRequestDto.toEntity(encodePassword);
+        Member member = memberRequestDto.toEntity(encodePassword,Auth.USER);
+        memberService.join(member);
+        Token token = new Token(member);
+        tokenService.join(token);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "관리자 전용 회원 가입", description = "회사 계정을 등록할 때 사용한다.")
+    @PostMapping("/member/company")
+    public void createCompany(@RequestBody MemberReqDto memberRequestDto) {
+        String encodePassword = passwordEncoder.encode(memberRequestDto.getPassword());
+        Member member = memberRequestDto.toEntity(encodePassword, Auth.COMPANY);
         memberService.join(member);
         Token token = new Token(member);
         tokenService.join(token);
