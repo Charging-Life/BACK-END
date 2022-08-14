@@ -24,7 +24,7 @@ public class ChargingStation {
     private Double lat;
     private Double lng;
     private String useTime;
-    @ManyToOne @JoinColumn(name = "business_id")
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "business_id")
     private Business business;
     private Boolean parkingFree;
     private String note;

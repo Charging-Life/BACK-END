@@ -16,7 +16,7 @@ public class Charger {
 
     @Id @GeneratedValue
     private Long Id;
-    @ManyToOne @JoinColumn(name = "charging_station_id")
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "charging_station_id")
     private ChargingStation chargingStation;
     private Integer chargerId;
     private String chargerType;

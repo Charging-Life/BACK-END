@@ -1,8 +1,9 @@
 package com.example.charging_life.station;
 
-import com.example.charging_life.station.dto.ChargingStationDto;
+import com.example.charging_life.station.entity.Business;
 import com.example.charging_life.station.entity.Charger;
 import com.example.charging_life.station.entity.ChargingStation;
+import com.example.charging_life.station.repository.JpaBusinessRepository;
 import com.example.charging_life.station.repository.JpaChargerRepository;
 import com.example.charging_life.station.repository.JpaStationRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
+import java.util.List;
 
 @Transactional(readOnly = true)
 @Service
@@ -33,6 +35,8 @@ public class StationService{
     private final JpaStationRepository jpaStationRepository;
     //Charger Repository
     private final JpaChargerRepository jpaChargerRepository;
+    //Business Repository
+    private final JpaBusinessRepository jpaBusinessRepository;
 
     //change the ParkingFree type to boolean
     public boolean checkParkingFree(String parkingFree){
@@ -48,6 +52,26 @@ public class StationService{
             return true;
         }
         return true;
+    }
+
+    public void saveBusiness(JSONObject jsonObject) {
+        String businessId = (String) jsonObject.get("busiId");
+        String business = (String) jsonObject.get("bnm");
+        String operator = (String) jsonObject.get("busiNm");
+        String businessCall = (String) jsonObject.get("busiCall");
+
+        Business businessEntity = Business.builder()
+                .businessId(businessId)
+                .business(business)
+                .operator(operator)
+                .businessCall(businessCall)
+                .build();
+        jpaBusinessRepository.save(businessEntity);
+
+        List<Business> findBusiness = jpaBusinessRepository.findByOperator(operator);
+        //System.out.println(findBusiness);
+
+        if (findBusiness.isEmpty()) jpaBusinessRepository.save(businessEntity);
     }
 
     //save the data to charger
@@ -66,8 +90,51 @@ public class StationService{
         //System.out.println(charger.getChargingStation().getId().toString() + " " + charger.getId().toString());
     };
 
+    public void saveChargingStation(JSONObject jsonObject) {
+        String statNm = (String) jsonObject.get("statNm");
+        String statId = (String) jsonObject.get("statId");
+        //System.out.println(statId);
+        String address = (String) jsonObject.get("addr");
+        String location = (String) jsonObject.get("location");
+        Double lat = Double.parseDouble((String) jsonObject.get("lat"));
+        Double lng = Double.parseDouble((String) jsonObject.get("lng"));
+        String useTime = (String) jsonObject.get("useTime");
+        Boolean parkingFree = checkParkingFree((String) jsonObject.get("parkingFree"));
+        String note = (String) jsonObject.get("note");
+        Boolean limitYn = checkLimitYn((String) jsonObject.get("limitYn"));
+        String limitDetail = (String) jsonObject.get("limitDetail");
+
+        ChargingStation chargingStation = ChargingStation.builder()
+                .statNm(statNm)
+                .statId(statId)
+                .address(address)
+                .location(location)
+                .lat(lat)
+                .lng(lng)
+                .useTime(useTime)
+                .parkingFree(parkingFree)
+                .note(note)
+                .limitYn(limitYn)
+                .limitDetail(limitDetail)
+                .build();
+
+        ChargingStation findChargingStation = jpaStationRepository.findByStatId(statId);
+        //System.out.println(findchargingStation);
+
+        if (findChargingStation == null) {
+            ChargingStation saveChargingStation = jpaStationRepository.save(chargingStation);
+            //save the data to charger
+            saveCharger(jsonObject, saveChargingStation);
+        } else {
+            //save the data to charger
+            saveCharger(jsonObject, findChargingStation);
+        }
+    }
+
+
+
     @Transactional
-    public void saveChargingStationData() {
+    public void saveChargingStationData(Boolean isBusiness) {
         for (int i = 1; i < 14; i++) {
             try {
                 //used to create a mutable
@@ -112,45 +179,9 @@ public class StationService{
 
                     jsonObject = (JSONObject) chargingStationJson;
                     //System.out.println(jsonObject);
-                    //save the data to charging station
-                    String statNm = (String) jsonObject.get("statNm");
-                    String statId = (String) jsonObject.get("statId");
-                    //System.out.println(statId);
-                    String address = (String) jsonObject.get("addr");
-                    String location = (String) jsonObject.get("location");
-                    Double lat = Double.parseDouble((String) jsonObject.get("lat"));
-                    Double lng = Double.parseDouble((String) jsonObject.get("lng"));
-                    String useTime = (String) jsonObject.get("useTime");
-                    Boolean parkingFree = checkParkingFree((String) jsonObject.get("parkingFree"));
-                    String note = (String) jsonObject.get("note");
-                    Boolean limitYn = checkLimitYn((String) jsonObject.get("limitYn"));
-                    String limitDetail = (String) jsonObject.get("limitDetail");
 
-                    ChargingStation chargingStation = ChargingStation.builder()
-                            .statNm(statNm)
-                            .statId(statId)
-                            .address(address)
-                            .location(location)
-                            .lat(lat)
-                            .lng(lng)
-                            .useTime(useTime)
-                            .parkingFree(parkingFree)
-                            .note(note)
-                            .limitYn(limitYn)
-                            .limitDetail(limitDetail)
-                            .build();
-
-                    ChargingStation findChargingStation = jpaStationRepository.findByStatId(statId);
-                    //System.out.println(findchargingStation);
-
-                    if (findChargingStation == null) {
-                        ChargingStation saveChargingStation = jpaStationRepository.save(chargingStation);
-                        //save the data to charger
-                        saveCharger(jsonObject, saveChargingStation);
-                    } else {
-                        //save the data to charger
-                        saveCharger(jsonObject, findChargingStation);
-                    }
+                    if (isBusiness) saveBusiness(jsonObject); //save the data to business
+                    else saveChargingStation(jsonObject); //save the data to charging station & charger
 
                 }
 
@@ -167,8 +198,8 @@ public class StationService{
         }
     }
 
-    public ChargingStation findStation(Long id) {
-        ChargingStation chargingStation = jpaStationRepository.getReferenceById(id);
+    public ChargingStation findStation(String statId) {
+        ChargingStation chargingStation = jpaStationRepository.findByStatId(statId);
         return chargingStation;
     }
 }
