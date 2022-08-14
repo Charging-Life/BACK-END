@@ -1,11 +1,13 @@
 package com.example.charging_life.station.entity;
 
+
+import com.example.charging_life.member.entity.MemberBusiness;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -18,11 +20,17 @@ public class Business {
     private String business;
     private String businessCall;
     private String businessImg;
+    @OneToMany(mappedBy = "business", fetch = FetchType.LAZY)
+    private List<MemberBusiness> memberBusinesses = new ArrayList<>();
 
     public Business(String businessId, String business, String businessCall, String businessImg) {
         this.businessId = businessId;
         this.business = business;
         this.businessCall = businessCall;
         this.businessImg = businessImg;
+    }
+
+    public void addMember(MemberBusiness memberBusiness) {
+        this.memberBusinesses.add(memberBusiness);
     }
 }
