@@ -1,10 +1,12 @@
 package com.example.charging_life.station;
 
+import com.example.charging_life.station.dto.ChargingStationDto;
+import com.example.charging_life.station.entity.ChargingStation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 
 import java.io.BufferedReader;
@@ -26,12 +28,18 @@ public class StationController {
     @GetMapping("/station")
     public String getChargingStationApi() throws IOException {
         stationService.saveChargingStationData();
-        return "success";
+        return stationService.toString();
     }
 
-   /* @GetMapping("/station/staus")
-    public String getChargingStationApi(@RequestParam(name = "sdf") String param) throws IOException {
-
+    @GetMapping("/station/{id}")
+    public ResponseEntity<ChargingStationDto> getChargingStationId(@PathVariable Long id) throws IOException {
+        ChargingStation chargingStation = stationService.findStation(id);
+        return ResponseEntity.ok(new ChargingStationDto(chargingStation));
     }
-    */
+
+   @GetMapping("/station/statId")
+    public String getChargingStationStatId(@RequestParam(name = "statId") String statId) throws IOException {
+       return "success";
+    }
+
 }
