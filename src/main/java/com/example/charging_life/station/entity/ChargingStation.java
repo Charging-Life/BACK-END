@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -16,14 +17,14 @@ public class ChargingStation {
     private Long id;
     private String statNm;
     @OneToMany(mappedBy = "chargingStation")
-    private List<Charger> charger;
+    private List<Charger> charger = new ArrayList<>();
     private String statId;
     private String address;
     private String location;
     private Double lat;
     private Double lng;
     private String useTime;
-    @ManyToOne @JoinColumn(name = "business_id")
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "business_id")
     private Business business;
     private Boolean parkingFree;
     private String note;

@@ -13,7 +13,7 @@ public class Car {
     @Id @GeneratedValue
     private Long id;
     private String car;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 

@@ -12,9 +12,9 @@ import javax.persistence.*;
 public class MemberBusiness {
     @Id @GeneratedValue
     private Long id;
-    @ManyToOne @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "member_id")
     private Member member;
-    @ManyToOne @JoinColumn(name = "business_id")
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "business_id")
     private Business business;
 
     public MemberBusiness(Member member, Business business) {

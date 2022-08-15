@@ -1,7 +1,6 @@
 package com.example.charging_life.member.entity;
 
 
-import com.example.charging_life.station.entity.Car;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,9 +25,9 @@ public class Member implements UserDetails {
     private String phone;
     @Enumerated(value = EnumType.STRING)
     private Auth auth;
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member")
     private List<Car> cars = new ArrayList<>();
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member")
     private List<MemberBusiness> businesses = new ArrayList<>();
 
     @Builder

@@ -1,9 +1,9 @@
 package com.example.charging_life.member.dto;
 
 import com.example.charging_life.member.entity.Auth;
+import com.example.charging_life.member.entity.Car;
 import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.member.entity.MemberBusiness;
-import com.example.charging_life.station.entity.Car;
 import lombok.Getter;
 
 import java.util.ArrayList;
