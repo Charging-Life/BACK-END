@@ -16,4 +16,13 @@ public class Alarm {
     private ChargingStation chargingStation;
     private String status;
     private String statusImg;
+
+    public Alarm(ChargingStation chargingStation) {
+        this.chargingStation = chargingStation;
+        this.status = "none";
+    }
+
+    public void updateStatus(String status){
+        this.status = status;
+    }
 }
