@@ -3,12 +3,10 @@ package com.example.charging_life.station.dto;
 import com.example.charging_life.station.entity.Business;
 import com.example.charging_life.station.entity.Charger;
 import com.example.charging_life.station.entity.ChargingStation;
+import com.example.charging_life.station.entity.Zcode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,11 +22,17 @@ public class ChargingStationDto {
     private Double lat;
     private Double lng;
     private String useTime;
-    private Business business;
+    private String businessId;
+    private String business;
+    private String operator;
+    private String businessCall;
     private Boolean parkingFree;
     private String note;
     private Boolean limitYn;
     private String limitDetail;
+    private Long zcode;
+    private String city;
+
 
     public ChargingStationDto(ChargingStation chargingStation) {
         this.id = chargingStation.getId();
@@ -43,11 +47,17 @@ public class ChargingStationDto {
         this.lat = chargingStation.getLat();
         this.lng = chargingStation.getLng();
         this.useTime = chargingStation.getUseTime();
-        this.business = chargingStation.getBusiness();
+        this.businessId = chargingStation.getBusiness().getBusinessId();
+        this.business = chargingStation.getBusiness().getBusiness();
+        this.operator = chargingStation.getBusiness().getOperator();
+        this.businessCall = chargingStation.getBusiness().getBusinessCall();
         this.parkingFree = chargingStation.getParkingFree();
         this.note = chargingStation.getNote();
         this.limitYn = chargingStation.getLimitYn();
         this.limitDetail = chargingStation.getLimitDetail();
+        this.zcode = chargingStation.getZcode().getZcode();
+        this.city = chargingStation.getZcode().getCity();
+
     }
 }
 
@@ -63,3 +73,30 @@ class ChargerDto {
         this.outPut =charger.getOutPut();
     }
 }
+/*
+
+@Getter
+class BusinessDto{
+    private String businessId;
+    private String business;
+    private String operator;
+    private String businessCall;
+
+    public BusinessDto(Business business) {
+        this.businessId = business.getBusinessId();
+        this.business = business.getBusiness();
+        this.operator = business.getOperator();
+        this.businessCall = business.getBusinessCall();
+    }
+}
+
+@Getter
+class ZcodeDto{
+    private Long zcode;
+    private String city;
+
+    public ZcodeDto(Zcode zcode) {
+        this.zcode = zcode.getZcode();
+        this.city = zcode.getCity();
+    }
+}*/

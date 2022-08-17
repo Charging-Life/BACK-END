@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JpaStationRepository extends JpaRepository<ChargingStation, Long>{
     ChargingStation findByStatId(String statId);
+    ChargingStation findByLimitYn(Boolean limitYn);
 }
 

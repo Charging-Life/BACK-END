@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Entity
@@ -16,7 +14,7 @@ public class Charger {
 
     @Id @GeneratedValue
     private Long Id;
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "charging_station_id")
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "charging_station_id") @JsonIgnore
     private ChargingStation chargingStation;
     private Integer chargerId;
     private String chargerType;

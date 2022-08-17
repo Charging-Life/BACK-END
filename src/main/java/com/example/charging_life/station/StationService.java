@@ -3,9 +3,11 @@ package com.example.charging_life.station;
 import com.example.charging_life.station.entity.Business;
 import com.example.charging_life.station.entity.Charger;
 import com.example.charging_life.station.entity.ChargingStation;
+import com.example.charging_life.station.entity.Zcode;
 import com.example.charging_life.station.repository.JpaBusinessRepository;
 import com.example.charging_life.station.repository.JpaChargerRepository;
 import com.example.charging_life.station.repository.JpaStationRepository;
+import com.example.charging_life.station.repository.JpaZcodeRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -20,9 +22,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
-import java.util.List;
+import java.util.Optional;
 
-@Transactional(readOnly = true)
+@Transactional(readOnly = false)
 @Service
 @RequiredArgsConstructor
 public class StationService{
@@ -37,6 +39,8 @@ public class StationService{
     private final JpaChargerRepository jpaChargerRepository;
     //Business Repository
     private final JpaBusinessRepository jpaBusinessRepository;
+    //Zcode Repository
+    private final JpaZcodeRepository jpaZcodeRepository;
 
     //change the ParkingFree type to boolean
     public boolean checkParkingFree(String parkingFree){
@@ -54,6 +58,7 @@ public class StationService{
         return true;
     }
 
+    @Transactional
     public void saveBusiness(JSONObject jsonObject) {
         String businessId = (String) jsonObject.get("busiId");
         String business = (String) jsonObject.get("bnm");
@@ -66,15 +71,16 @@ public class StationService{
                 .operator(operator)
                 .businessCall(businessCall)
                 .build();
-        jpaBusinessRepository.save(businessEntity);
+        //jpaBusinessRepository.save(businessEntity);
 
-        List<Business> findBusiness = jpaBusinessRepository.findByOperator(operator);
+        Business findBusiness = jpaBusinessRepository.findByBusinessId(businessId);
         //System.out.println(findBusiness);
 
-        if (findBusiness.isEmpty()) jpaBusinessRepository.save(businessEntity);
+        if (findBusiness == null) jpaBusinessRepository.saveAndFlush(businessEntity);
     }
 
     //save the data to charger
+    @Transactional
     public void saveCharger(JSONObject jsonObject, ChargingStation chargingStation){
         Integer chargerId = Integer.valueOf((String) jsonObject.get("chgerId"));
         String chargerType = (String) jsonObject.get("chgerType");
@@ -90,6 +96,7 @@ public class StationService{
         //System.out.println(charger.getChargingStation().getId().toString() + " " + charger.getId().toString());
     };
 
+    @Transactional
     public void saveChargingStation(JSONObject jsonObject) {
         String statNm = (String) jsonObject.get("statNm");
         String statId = (String) jsonObject.get("statId");
@@ -103,7 +110,12 @@ public class StationService{
         String note = (String) jsonObject.get("note");
         Boolean limitYn = checkLimitYn((String) jsonObject.get("limitYn"));
         String limitDetail = (String) jsonObject.get("limitDetail");
+        String businessId = (String) jsonObject.get("busiId");
+        Long zcodeId = Long.parseLong((String) jsonObject.get("zcode"));
+        //System.out.println(businessId + "/ " + zcodeId);
 
+        Business byBusinessId = jpaBusinessRepository.findByBusinessId(businessId);
+        Zcode referenceById = jpaZcodeRepository.findByZcode(zcodeId);
         ChargingStation chargingStation = ChargingStation.builder()
                 .statNm(statNm)
                 .statId(statId)
@@ -116,6 +128,8 @@ public class StationService{
                 .note(note)
                 .limitYn(limitYn)
                 .limitDetail(limitDetail)
+                .business(byBusinessId)
+                .zcode(referenceById)
                 .build();
 
         ChargingStation findChargingStation = jpaStationRepository.findByStatId(statId);
@@ -135,7 +149,7 @@ public class StationService{
 
     @Transactional
     public void saveChargingStationData(Boolean isBusiness) {
-        for (int i = 1; i < 14; i++) {
+        //for (int i = 1; i < 14; i++) {
             try {
                 //used to create a mutable
                 StringBuilder result = new StringBuilder();
@@ -143,8 +157,8 @@ public class StationService{
                 //openApi address
                 String apiUrl = "http://apis.data.go.kr/B552584/EvCharger/getChargerInfo?" +
                         "serviceKey=" + key +
-                        "&numOfRows=9999" +
-                        "&pageNo=" + i +
+                        "&numOfRows=1000" +
+                        "&pageNo=" + 3 +
                         "&dataType=JSON";
                 URL url = new URL(apiUrl);
 
@@ -161,7 +175,7 @@ public class StationService{
                     result.append(returnLine + "\n\r");
                 }
 
-                //urlConnection.disconnect();
+                urlConnection.disconnect();
 
                 //extract the data which we need
                 JSONObject jsonObject;
@@ -194,12 +208,17 @@ public class StationService{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("page : " + i);
-        }
+            System.out.println("success");
+        //}
     }
 
     public ChargingStation findStation(String statId) {
         ChargingStation chargingStation = jpaStationRepository.findByStatId(statId);
+        return chargingStation;
+    }
+
+    public ChargingStation findIsLimit(Boolean limitYn) {
+        ChargingStation chargingStation = jpaStationRepository.findByLimitYn(limitYn);
         return chargingStation;
     }
 }

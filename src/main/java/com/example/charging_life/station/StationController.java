@@ -38,9 +38,10 @@ public class StationController {
         return ResponseEntity.ok(new ChargingStationDto(chargingStation));
     }
 
-   @GetMapping("/station/filter")
-    public String getChargingStationStatId(@RequestParam(name = "statId") String statId) throws IOException {
-       return "success";
-    }
+//   @GetMapping("/station/filter")
+//    public ResponseEntity<ChargingStationDto> getChargingStationFilter(@RequestParam(value = "limitYn") Boolean limitYn) throws IOException {
+//       ChargingStation chargingStation = stationService.findIsLimit(limitYn);
+//       return ResponseEntity.ok(new ChargingStationDto(chargingStation));
+//    }
 
 }

@@ -22,6 +22,8 @@ public class Business {
     private String operator;
     private String businessCall;
     @OneToMany(mappedBy = "business")
+    private List<ChargingStation> chargingStations = new ArrayList<>();
+    @OneToMany(mappedBy = "business")
     private List<MemberBusiness> memberBusinesses = new ArrayList<>();
 
     @Builder
@@ -32,6 +34,9 @@ public class Business {
         this.businessCall = businessCall;
     }
 
+    public void addChargingStation(ChargingStation chargingStation) {
+        this.chargingStations.add(chargingStation);
+    }
     public void addMember(MemberBusiness memberBusiness) {
         this.memberBusinesses.add(memberBusiness);
     }
