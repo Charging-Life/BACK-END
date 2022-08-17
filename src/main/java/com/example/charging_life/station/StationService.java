@@ -148,7 +148,7 @@ public class StationService{
 
 
     @Transactional
-    public void saveChargingStationData(Boolean isBusiness) {
+    public void saveChargingStationData(Boolean isBusiness, Integer page) {
         //for (int i = 1; i < 14; i++) {
             try {
                 //used to create a mutable
@@ -158,7 +158,7 @@ public class StationService{
                 String apiUrl = "http://apis.data.go.kr/B552584/EvCharger/getChargerInfo?" +
                         "serviceKey=" + key +
                         "&numOfRows=1000" +
-                        "&pageNo=" + 3 +
+                        "&pageNo=" + page.toString() +
                         "&dataType=JSON";
                 URL url = new URL(apiUrl);
 

@@ -21,14 +21,14 @@ public class StationController {
 
     @Operation(summary = "공공 api 받아오기", description = "성공하면 공공 api를 ChargingStation & Charger 데이터베이스에 저장")
     @GetMapping("/station")
-    public void getChargingStationApi() throws IOException {
-        stationService.saveChargingStationData(false);
+    public void getChargingStationApi(@RequestParam(name = "page") Integer page) throws IOException {
+        stationService.saveChargingStationData(false,page);
     }
 
     @Operation(summary = "공공 api 받아오기", description = "성공하면 공공 api를 Business 데이터베이스에 저장")
     @GetMapping("/business")
-    public void getBusinessApi() throws IOException {
-        stationService.saveChargingStationData(true);
+    public void getBusinessApi(@RequestParam(name = "page") Integer page) throws IOException {
+        stationService.saveChargingStationData(true,page);
     }
 
     @Operation(summary = "해당 statId 충전소 정보", description = "성공하면 해당 station id의 충전소 정보 받아오기 ")
