@@ -37,10 +37,4 @@ public class StationController {
         ChargingStation chargingStation = stationService.findStation(statId);
         return ResponseEntity.ok(new ChargingStationDto(chargingStation));
     }
-
-   @GetMapping("/station/filter")
-    public String getChargingStationStatId(@RequestParam(name = "statId") String statId) throws IOException {
-       return "success";
-    }
-
 }
