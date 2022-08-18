@@ -1,6 +1,7 @@
 package com.example.charging_life.station;
 
 import com.example.charging_life.station.dto.ChargingStationDto;
+import com.example.charging_life.station.dto.StationResDto;
 import com.example.charging_life.station.entity.ChargingStation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,13 +22,13 @@ public class StationController {
 
 
     @Operation(summary = "공공 api 받아오기", description = "성공하면 공공 api를 ChargingStation & Charger 데이터베이스에 저장")
-    @GetMapping("/station")
+    @GetMapping("/station/api")
     public void getChargingStationApi() throws IOException {
         stationService.saveChargingStationData(false);
     }
 
     @Operation(summary = "공공 api 받아오기", description = "성공하면 공공 api를 Business 데이터베이스에 저장")
-    @GetMapping("/business")
+    @GetMapping("/business/api")
     public void getBusinessApi() throws IOException {
         stationService.saveChargingStationData(true);
     }
