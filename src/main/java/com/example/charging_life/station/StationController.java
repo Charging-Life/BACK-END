@@ -39,4 +39,10 @@ public class StationController {
         ChargingStation chargingStation = stationService.findStation(statId);
         return ResponseEntity.ok(new ChargingStationDto(chargingStation));
     }
+
+    @Operation(summary = "충전소 검색", description = "충전소 이름(statNm)을 이용해 충전소를 검색할 수 있다.")
+    @GetMapping("/station")
+    public ResponseEntity<List<StationResDto>> getStationByStatNm(@RequestParam String statNm) {
+        return ResponseEntity.ok(stationService.findStationByStatNm(statNm));
+    }
 }
