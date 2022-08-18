@@ -29,6 +29,8 @@ public class Member implements UserDetails {
     private List<Car> cars = new ArrayList<>();
     @OneToMany(mappedBy = "member")
     private List<MemberBusiness> businesses = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    private List<MemberChargingStation> memberChargingStations = new ArrayList<>();
 
     @Builder
     public Member(String email, String password, String name, String phone, Auth auth, Car car) {
@@ -42,6 +44,10 @@ public class Member implements UserDetails {
 
     public void addBusiness(MemberBusiness memberBusiness) {
         this.businesses.add(memberBusiness);
+    }
+
+    public void addChargingStation(MemberChargingStation memberChargingStation) {
+        this.memberChargingStations.add(memberChargingStation);
     }
 
     @Override

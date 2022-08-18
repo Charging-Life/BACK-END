@@ -72,6 +72,15 @@ public class MemberController {
         return ResponseEntity.ok(new MemberResDto(member));
     }
 
+    @Operation(summary = "충전소 관리자가 관리하는 충전소 등록")
+    @PostMapping("/member/station")
+    public void enrollStation(
+            @RequestHeader(name = "Authorization") String accessToken,
+            @RequestBody StationReqDto stationReqDto) {
+        Member member = findMemberByToken(accessToken);
+        memberService.enrollStation(member, stationReqDto);
+    }
+
     @PreAuthorize("hasAuthority('COMPANY')")
     @Operation(summary = "기업 회원정보 조회")
     @GetMapping("/member/company")
