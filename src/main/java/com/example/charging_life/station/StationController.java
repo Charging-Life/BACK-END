@@ -3,6 +3,7 @@ package com.example.charging_life.station;
 import com.example.charging_life.station.dto.ChargingStationDto;
 import com.example.charging_life.station.entity.ChargingStation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 
 import java.io.IOException;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class StationController {
@@ -21,8 +23,10 @@ public class StationController {
 
     @Operation(summary = "공공 api 받아오기", description = "성공하면 공공 api를 ChargingStation & Charger 데이터베이스에 저장")
     @GetMapping("/station")
-    public void getChargingStationApi(@RequestParam(name = "page") Integer page) throws IOException {
-        stationService.saveChargingStationData(false,page);
+    public void getChargingStationApi() throws IOException {
+        for (int i = 1; i < 134; i++) {
+            stationService.saveChargingStationData(false,i);
+        }
     }
 
     @Operation(summary = "공공 api 받아오기", description = "성공하면 공공 api를 Business 데이터베이스에 저장")
@@ -37,11 +41,4 @@ public class StationController {
         ChargingStation chargingStation = stationService.findStation(statId);
         return ResponseEntity.ok(new ChargingStationDto(chargingStation));
     }
-
-//   @GetMapping("/station/filter")
-//    public ResponseEntity<ChargingStationDto> getChargingStationFilter(@RequestParam(value = "limitYn") Boolean limitYn) throws IOException {
-//       ChargingStation chargingStation = stationService.findIsLimit(limitYn);
-//       return ResponseEntity.ok(new ChargingStationDto(chargingStation));
-//    }
-
 }

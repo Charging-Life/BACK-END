@@ -149,67 +149,65 @@ public class StationService{
 
     @Transactional
     public void saveChargingStationData(Boolean isBusiness, Integer page) {
-        //for (int i = 1; i < 14; i++) {
-            try {
-                //used to create a mutable
-                StringBuilder result = new StringBuilder();
+        try {
+            //used to create a mutable
+            StringBuilder result = new StringBuilder();
 
-                //openApi address
-                String apiUrl = "http://apis.data.go.kr/B552584/EvCharger/getChargerInfo?" +
-                        "serviceKey=" + key +
-                        "&numOfRows=1000" +
-                        "&pageNo=" + page.toString() +
-                        "&dataType=JSON";
-                URL url = new URL(apiUrl);
+            //openApi address
+            String apiUrl = "http://apis.data.go.kr/B552584/EvCharger/getChargerInfo?" +
+                    "serviceKey=" + key +
+                    "&numOfRows=1000" +
+                    "&pageNo=" + page.toString() +
+                    "&dataType=JSON";
+            URL url = new URL(apiUrl);
 
-                //connection with api
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
+            //connection with api
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
 
-                BufferedReader br;
+            BufferedReader br;
 
-                br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
-                String returnLine;
+            br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+            String returnLine;
 
-                while ((returnLine = br.readLine()) != null) {
-                    result.append(returnLine + "\n\r");
-                }
-
-                urlConnection.disconnect();
-
-                //extract the data which we need
-                JSONObject jsonObject;
-                JSONParser jsonParser = new JSONParser();
-                JSONObject jsonObj = (JSONObject) jsonParser.parse(result.toString());
-                JSONObject parseResponse = (JSONObject) jsonObj.get("items");
-                // System.out.println(parseResponse.toJSONString());
-                //JSONObject parseBody = (JSONObject) parseResponse.get("item");
-
-                JSONArray array = (JSONArray) parseResponse.get("item");
-                //System.out.println(array.toJSONString());
-
-                //pick the data from array
-                for (Object chargingStationJson : array) {
-
-                    jsonObject = (JSONObject) chargingStationJson;
-                    //System.out.println(jsonObject);
-
-                    if (isBusiness) saveBusiness(jsonObject); //save the data to business
-                    else saveChargingStation(jsonObject); //save the data to charging station & charger
-
-                }
-
-            } catch (ParseException | MalformedURLException e) {
-                e.printStackTrace();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            while ((returnLine = br.readLine()) != null) {
+                result.append(returnLine + "\n\r");
             }
-            System.out.println("success");
-        //}
+
+            urlConnection.disconnect();
+
+            //extract the data which we need
+            JSONObject jsonObject;
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObj = (JSONObject) jsonParser.parse(result.toString());
+            JSONObject parseResponse = (JSONObject) jsonObj.get("items");
+            // System.out.println(parseResponse.toJSONString());
+            //JSONObject parseBody = (JSONObject) parseResponse.get("item");
+
+            JSONArray array = (JSONArray) parseResponse.get("item");
+            //System.out.println(array.toJSONString());
+
+            //pick the data from array
+            for (Object chargingStationJson : array) {
+
+                jsonObject = (JSONObject) chargingStationJson;
+                //System.out.println(jsonObject);
+
+                if (isBusiness) saveBusiness(jsonObject); //save the data to business
+                else saveChargingStation(jsonObject); //save the data to charging station & charger
+
+            }
+
+        } catch (ParseException | MalformedURLException e) {
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("success: "+page);
     }
 
     public ChargingStation findStation(String statId) {
