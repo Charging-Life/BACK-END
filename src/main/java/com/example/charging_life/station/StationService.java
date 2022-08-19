@@ -1,5 +1,9 @@
 package com.example.charging_life.station;
 
+import com.example.charging_life.member.entity.Member;
+import com.example.charging_life.member.entity.MemberChargingStation;
+import com.example.charging_life.station.dto.ChargingStationDto;
+import com.example.charging_life.station.dto.StationResDto;
 import com.example.charging_life.station.entity.Business;
 import com.example.charging_life.station.entity.Charger;
 import com.example.charging_life.station.entity.ChargingStation;
@@ -20,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Transactional(readOnly = true)
@@ -201,5 +206,23 @@ public class StationService{
     public ChargingStation findStation(String statId) {
         ChargingStation chargingStation = jpaStationRepository.findByStatId(statId);
         return chargingStation;
+    }
+
+    public List<StationResDto> findStationByStatNm(String statNm) {
+        List<ChargingStation> stations = jpaStationRepository.findByStatNmContaining(statNm);
+        List<StationResDto> stationResDtos = new ArrayList<>();
+        for (ChargingStation chargingStation : stations) {
+            stationResDtos.add(new StationResDto(chargingStation));
+        }
+        return stationResDtos;
+    }
+
+    public List<ChargingStationDto> findStationByManager(Member member) {
+        List<ChargingStationDto> stationResDtos = new ArrayList<>();
+        for (MemberChargingStation memberStation : member.getMemberChargingStations()) {
+            ChargingStation chargingStation = memberStation.getChargingStation();
+            stationResDtos.add(new ChargingStationDto(chargingStation));
+        }
+        return stationResDtos;
     }
 }

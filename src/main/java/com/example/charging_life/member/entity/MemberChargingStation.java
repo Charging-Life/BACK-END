@@ -1,6 +1,6 @@
 package com.example.charging_life.member.entity;
 
-import com.example.charging_life.station.entity.Business;
+import com.example.charging_life.station.entity.ChargingStation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,18 +10,17 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor
-public class MemberBusiness {
+public class MemberChargingStation {
     @Id @GeneratedValue
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "member_id") @JsonIgnore
     private Member member;
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "business_id") @JsonIgnore
-    private Business business;
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "charging_station_id") @JsonIgnore
+    private ChargingStation chargingStation;
 
-    public MemberBusiness(Member member, Business business) {
+    public MemberChargingStation(Member member, ChargingStation chargingStation) {
         this.member = member;
-        this.business = business;
-        member.addBusiness(this);
-        business.addMember(this);
+        this.chargingStation = chargingStation;
+        member.addChargingStation(this);
     }
 }

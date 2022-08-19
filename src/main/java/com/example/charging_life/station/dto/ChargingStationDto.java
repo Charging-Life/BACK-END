@@ -6,9 +6,6 @@ import com.example.charging_life.station.entity.ChargingStation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,14 +14,14 @@ import java.util.List;
 public class ChargingStationDto {
     private Long id;
     private String statNm;
-    private List<ChargerDto> chargerDtos = new ArrayList<>();
+    private List<ChargerDto> chargers = new ArrayList<>();
     private String statId;
     private String address;
     private String location;
     private Double lat;
     private Double lng;
     private String useTime;
-    private Business business;
+    private BusinessDto business;
     private Boolean parkingFree;
     private String note;
     private Boolean limitYn;
@@ -38,12 +35,12 @@ public class ChargingStationDto {
         this.location = chargingStation.getLocation();
         List<Charger> chargers = chargingStation.getCharger();
         for (Charger charger : chargers) {
-            chargerDtos.add(new ChargerDto(charger));
+            this.chargers.add(new ChargerDto(charger));
         }
         this.lat = chargingStation.getLat();
         this.lng = chargingStation.getLng();
         this.useTime = chargingStation.getUseTime();
-        this.business = chargingStation.getBusiness();
+        this.business = new BusinessDto(chargingStation.getBusiness());
         this.parkingFree = chargingStation.getParkingFree();
         this.note = chargingStation.getNote();
         this.limitYn = chargingStation.getLimitYn();
@@ -61,5 +58,20 @@ class ChargerDto {
         this.chargerId = charger.getChargerId();;
         this.chargerType = charger.getChargerType();
         this.outPut =charger.getOutPut();
+    }
+}
+
+@Getter
+class BusinessDto {
+    private String businessId;
+    private String business;
+    private String operator;
+    private String businessCall;
+
+    public BusinessDto(Business business) {
+        this.businessId = business.getBusinessId();
+        this.business = business.getBusiness();
+        this.operator = business.getOperator();
+        this.businessCall = business.getBusinessCall();
     }
 }
