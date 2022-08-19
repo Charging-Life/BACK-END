@@ -1,11 +1,15 @@
 package com.example.charging_life.station;
 
+import com.example.charging_life.member.MemberService;
+import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.station.dto.ChargingStationDto;
 import com.example.charging_life.station.dto.StationResDto;
 import com.example.charging_life.station.entity.ChargingStation;
+import com.example.charging_life.token.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 
@@ -15,9 +19,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class StationController {
-    @Value ("${key.serviceKey}")
+    @Value("${key.serviceKey}")
     private String key;
 
+    private final TokenService tokenService;
+    private final MemberService memberService;
+    private final PasswordEncoder passwordEncoder;
     private final StationService stationService;
 
 
@@ -44,5 +51,14 @@ public class StationController {
     @GetMapping("/station")
     public ResponseEntity<List<StationResDto>> getStationByStatNm(@RequestParam String statNm) {
         return ResponseEntity.ok(stationService.findStationByStatNm(statNm));
+    }
+
+    @Operation(summary = "관리자 관할 충전소 조회", description = "관리자가 등록한 충전소 기준으로 조회한다.")
+    @GetMapping("/station/manager")
+    public ResponseEntity<List<ChargingStationDto>> getStationByManager(
+            @RequestHeader(name = "Authorization") String accessToken) {
+        String email = tokenService.getEmailFromToken(accessToken);
+        Member member = memberService.findMemberByEmail(email);
+        return ResponseEntity.ok(stationService.findStationByManager(member));
     }
 }
