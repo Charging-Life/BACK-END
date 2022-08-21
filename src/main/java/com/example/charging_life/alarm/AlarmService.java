@@ -1,11 +1,18 @@
 package com.example.charging_life.alarm;
 
+import com.example.charging_life.alarm.dto.AlarmResDto;
 import com.example.charging_life.alarm.dto.StationStat;
+import com.example.charging_life.member.JpaMemberStationRepo;
+import com.example.charging_life.member.entity.Member;
+import com.example.charging_life.member.entity.MemberChargingStation;
 import com.example.charging_life.station.entity.ChargingStation;
 import com.example.charging_life.station.repository.JpaStationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Transactional(readOnly = true)
 @Service
@@ -13,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AlarmService {
     private final JpaAlarmRepository jpaAlarmRepository;
     private final JpaStationRepository jpaStationRepository;
+    private final JpaMemberStationRepo jpaMemberStationRepo;
 
     @Transactional
     public void updateStationStat(StationStat stationStat, Long id) {
@@ -28,5 +36,16 @@ public class AlarmService {
     }
 
 
-
+    public List<AlarmResDto> getStationStat(Member member) {
+        List<MemberChargingStation> stations = jpaMemberStationRepo.findByMember(member);
+        List<AlarmResDto> alarmResDtos = new ArrayList<>();
+        for (MemberChargingStation station : stations) {
+            ChargingStation chargingStation = station.getChargingStation();
+            System.out.println(chargingStation.getId());
+            Alarm alarm = jpaAlarmRepository.findByChargingStationOrderByIdDesc(chargingStation)
+                    .stream().findFirst().get();
+            alarmResDtos.add(new AlarmResDto(alarm.getStatus()));
+        }
+        return alarmResDtos;
+    }
 }
