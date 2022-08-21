@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Transactional(readOnly = true)
 @Service
@@ -41,10 +42,9 @@ public class AlarmService {
         List<AlarmResDto> alarmResDtos = new ArrayList<>();
         for (MemberChargingStation station : stations) {
             ChargingStation chargingStation = station.getChargingStation();
-            System.out.println(chargingStation.getId());
-            Alarm alarm = jpaAlarmRepository.findByChargingStationOrderByIdDesc(chargingStation)
-                    .stream().findFirst().get();
-            alarmResDtos.add(new AlarmResDto(alarm.getStatus()));
+            Optional<Alarm> alarm = jpaAlarmRepository.findByChargingStationOrderByIdDesc(chargingStation)
+                    .stream().findFirst();
+            if(alarm.isPresent()) alarmResDtos.add(new AlarmResDto(alarm.get().getStatus(),chargingStation));
         }
         return alarmResDtos;
     }
