@@ -85,12 +85,22 @@ public class StationService{
         Integer chargerId = Integer.valueOf((String) jsonObject.get("chgerId"));
         String chargerType = (String) jsonObject.get("chgerType");
         Integer outPut = Integer.getInteger((String) jsonObject.get("outPut"));
+        Integer stat = Integer.getInteger((String) jsonObject.get("stat"));
+        Integer statUpdDt = Integer.getInteger((String) jsonObject.get("statUpdDt"));
+        Integer lastTsdt = Integer.getInteger((String) jsonObject.get("lastTsdt"));
+        Integer lastTedt = Integer.getInteger((String) jsonObject.get("lastTedt"));
+        Integer nowTsdt = Integer.getInteger((String) jsonObject.get("nowTsdt"));
 
         Charger charger = Charger.builder()
                 .chargingStation(chargingStation)
                 .chargerId(chargerId)
                 .chargerType(chargerType)
                 .outPut(outPut)
+                .stat(stat)
+                .statUpdDt(statUpdDt)
+                .lastTsdt(lastTsdt)
+                .lastTedt(lastTedt)
+                .nowTsdt(nowTsdt)
                 .build();
         jpaChargerRepository.save(charger);
         //System.out.println(charger.getChargingStation().getId().toString() + " " + charger.getId().toString());

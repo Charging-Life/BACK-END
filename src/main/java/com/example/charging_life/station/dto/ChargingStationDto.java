@@ -66,11 +66,21 @@ class ChargerDto {
     private Integer chargerId;
     private String chargerType;
     private Integer outPut;
+    private Integer stat;
+    private Integer statUpdDt;
+    private Integer lastTsdt;
+    private Integer lastTedt;
+    private Integer nowTsdt;
 
     public ChargerDto(Charger charger) {
         this.chargerId = charger.getChargerId();;
         this.chargerType = charger.getChargerType();
-        this.outPut =charger.getOutPut();
+        this.outPut = charger.getOutPut();
+        this.stat = charger.getStat();
+        this.statUpdDt = charger.getStatUpdDt();
+        this.lastTsdt = charger.getLastTsdt();
+        this.lastTedt = charger.getLastTedt();
+        this.nowTsdt = charger.getNowTsdt();
     }
 }
 /*
