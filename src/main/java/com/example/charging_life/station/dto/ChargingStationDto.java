@@ -15,17 +15,14 @@ import java.util.List;
 public class ChargingStationDto {
     private Long id;
     private String statNm;
-    private List<ChargerDto> chargerDtos = new ArrayList<>();
+    private List<ChargerDto> chargers = new ArrayList<>();
     private String statId;
     private String address;
     private String location;
     private Double lat;
     private Double lng;
     private String useTime;
-    private String businessId;
-    private String business;
-    private String operator;
-    private String businessCall;
+    private BusinessDto business;
     private Boolean parkingFree;
     private String note;
     private Boolean limitYn;
@@ -42,15 +39,12 @@ public class ChargingStationDto {
         this.location = chargingStation.getLocation();
         List<Charger> chargers = chargingStation.getCharger();
         for (Charger charger : chargers) {
-            chargerDtos.add(new ChargerDto(charger));
+            this.chargers.add(new ChargerDto(charger));
         }
         this.lat = chargingStation.getLat();
         this.lng = chargingStation.getLng();
         this.useTime = chargingStation.getUseTime();
-        this.businessId = chargingStation.getBusiness().getBusinessId();
-        this.business = chargingStation.getBusiness().getBusiness();
-        this.operator = chargingStation.getBusiness().getOperator();
-        this.businessCall = chargingStation.getBusiness().getBusinessCall();
+        this.business = new BusinessDto(chargingStation.getBusiness());
         this.parkingFree = chargingStation.getParkingFree();
         this.note = chargingStation.getNote();
         this.limitYn = chargingStation.getLimitYn();
@@ -83,10 +77,9 @@ class ChargerDto {
         this.nowTsdt = charger.getNowTsdt();
     }
 }
-/*
 
 @Getter
-class BusinessDto{
+class BusinessDto {
     private String businessId;
     private String business;
     private String operator;
@@ -100,13 +93,3 @@ class BusinessDto{
     }
 }
 
-@Getter
-class ZcodeDto{
-    private Long zcode;
-    private String city;
-
-    public ZcodeDto(Zcode zcode) {
-        this.zcode = zcode.getZcode();
-        this.city = zcode.getCity();
-    }
-}*/

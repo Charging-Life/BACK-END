@@ -1,9 +1,6 @@
 package com.example.charging_life.member.dto;
 
-import com.example.charging_life.member.entity.Auth;
-import com.example.charging_life.member.entity.Car;
-import com.example.charging_life.member.entity.Member;
-import com.example.charging_life.member.entity.MemberBusiness;
+import com.example.charging_life.member.entity.*;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -16,6 +13,7 @@ public class MemberResDto {
     private Auth auth;
     private List<String> businessNames = new ArrayList<>();
     private List<String> carNames = new ArrayList<>();
+    private List<String> stationNames = new ArrayList<>();
 
     public MemberResDto(Member member) {
         this.email = member.getEmail();
@@ -27,6 +25,9 @@ public class MemberResDto {
         }
         for (MemberBusiness memberBusiness : member.getBusinesses()) {
             businessNames.add(memberBusiness.getBusiness().getBusiness());
+        }
+        for (MemberChargingStation memberChargingStation : member.getMemberChargingStations()) {
+            stationNames.add(memberChargingStation.getChargingStation().getStatNm());
         }
 
     }
