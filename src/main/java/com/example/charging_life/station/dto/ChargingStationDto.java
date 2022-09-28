@@ -3,6 +3,7 @@ package com.example.charging_life.station.dto;
 import com.example.charging_life.station.entity.Business;
 import com.example.charging_life.station.entity.Charger;
 import com.example.charging_life.station.entity.ChargingStation;
+import com.example.charging_life.station.entity.Zcode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +27,9 @@ public class ChargingStationDto {
     private String note;
     private Boolean limitYn;
     private String limitDetail;
+    private Long zcode;
+    private String city;
+
 
     public ChargingStationDto(ChargingStation chargingStation) {
         this.id = chargingStation.getId();
@@ -45,6 +49,9 @@ public class ChargingStationDto {
         this.note = chargingStation.getNote();
         this.limitYn = chargingStation.getLimitYn();
         this.limitDetail = chargingStation.getLimitDetail();
+        this.zcode = chargingStation.getZcode().getZcode();
+        this.city = chargingStation.getZcode().getCity();
+
     }
 }
 
@@ -53,11 +60,21 @@ class ChargerDto {
     private Integer chargerId;
     private String chargerType;
     private Integer outPut;
+    private Integer stat;
+    private Integer statUpdDt;
+    private Integer lastTsdt;
+    private Integer lastTedt;
+    private Integer nowTsdt;
 
     public ChargerDto(Charger charger) {
         this.chargerId = charger.getChargerId();;
         this.chargerType = charger.getChargerType();
-        this.outPut =charger.getOutPut();
+        this.outPut = charger.getOutPut();
+        this.stat = charger.getStat();
+        this.statUpdDt = charger.getStatUpdDt();
+        this.lastTsdt = charger.getLastTsdt();
+        this.lastTedt = charger.getLastTedt();
+        this.nowTsdt = charger.getNowTsdt();
     }
 }
 
@@ -75,3 +92,4 @@ class BusinessDto {
         this.businessCall = business.getBusinessCall();
     }
 }
+

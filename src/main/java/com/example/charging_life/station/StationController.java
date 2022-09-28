@@ -7,6 +7,7 @@ import com.example.charging_life.station.dto.StationResDto;
 import com.example.charging_life.station.entity.ChargingStation;
 import com.example.charging_life.token.TokenService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class StationController {
@@ -31,7 +33,9 @@ public class StationController {
     @Operation(summary = "공공 api 받아오기", description = "성공하면 공공 api를 ChargingStation & Charger 데이터베이스에 저장")
     @GetMapping("/station/api")
     public void getChargingStationApi() throws IOException {
-        stationService.saveChargingStationData(false);
+        for (int i = 1; i < 134; i++) {
+            stationService.saveChargingStationData(false,i);
+        }
     }
 
     @Operation(summary = "공공 api 받아오기", description = "성공하면 공공 api를 Business 데이터베이스에 저장")

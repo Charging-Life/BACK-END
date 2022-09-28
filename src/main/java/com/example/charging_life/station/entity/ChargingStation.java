@@ -1,5 +1,6 @@
 package com.example.charging_life.station.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,18 +25,20 @@ public class ChargingStation {
     private Double lat;
     private Double lng;
     private String useTime;
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "business_id")
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "business_id") @JsonIgnore
     private Business business;
     private Boolean parkingFree;
     private String note;
     private Boolean limitYn;
     private String limitDetail;
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "zcode_id") @JsonIgnore
+    private Zcode zcode;
 
     @Builder
     public ChargingStation(String statNm, List<Charger> charger, String statId,
                            String address, String location, Double lat, Double lng,
                            String useTime, Business business, Boolean parkingFree, String note,
-                           Boolean limitYn, String limitDetail) {
+                           Boolean limitYn, String limitDetail, Zcode zcode) {
         this.statNm = statNm;
         this.charger = charger;
         this.statId = statId;
@@ -45,9 +48,12 @@ public class ChargingStation {
         this.lng = lng;
         this.useTime = useTime;
         this.business = business;
+        business.addChargingStation(this);
         this.parkingFree = parkingFree;
         this.note = note;
         this.limitYn = limitYn;
         this.limitDetail = limitDetail;
+        this.zcode = zcode;
+        zcode.addChargingStation(this);
     }
 }

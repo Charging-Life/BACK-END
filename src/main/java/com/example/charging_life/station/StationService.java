@@ -7,9 +7,11 @@ import com.example.charging_life.station.dto.StationResDto;
 import com.example.charging_life.station.entity.Business;
 import com.example.charging_life.station.entity.Charger;
 import com.example.charging_life.station.entity.ChargingStation;
+import com.example.charging_life.station.entity.Zcode;
 import com.example.charging_life.station.repository.JpaBusinessRepository;
 import com.example.charging_life.station.repository.JpaChargerRepository;
 import com.example.charging_life.station.repository.JpaStationRepository;
+import com.example.charging_life.station.repository.JpaZcodeRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -27,7 +29,8 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Transactional(readOnly = true)
+
+@Transactional(readOnly = false)
 @Service
 @RequiredArgsConstructor
 public class StationService{
@@ -42,6 +45,8 @@ public class StationService{
     private final JpaChargerRepository jpaChargerRepository;
     //Business Repository
     private final JpaBusinessRepository jpaBusinessRepository;
+    //Zcode Repository
+    private final JpaZcodeRepository jpaZcodeRepository;
 
     //change the ParkingFree type to boolean
     public boolean checkParkingFree(String parkingFree){
@@ -59,6 +64,7 @@ public class StationService{
         return true;
     }
 
+    @Transactional
     public void saveBusiness(JSONObject jsonObject) {
         String businessId = (String) jsonObject.get("busiId");
         String business = (String) jsonObject.get("bnm");
@@ -71,30 +77,42 @@ public class StationService{
                 .operator(operator)
                 .businessCall(businessCall)
                 .build();
-        jpaBusinessRepository.save(businessEntity);
+        //jpaBusinessRepository.save(businessEntity);
 
-        List<Business> findBusiness = jpaBusinessRepository.findByOperator(operator);
+        Business findBusiness = jpaBusinessRepository.findByBusinessId(businessId);
         //System.out.println(findBusiness);
 
-        if (findBusiness.isEmpty()) jpaBusinessRepository.save(businessEntity);
+        if (findBusiness == null) jpaBusinessRepository.saveAndFlush(businessEntity);
     }
 
     //save the data to charger
+    @Transactional
     public void saveCharger(JSONObject jsonObject, ChargingStation chargingStation){
         Integer chargerId = Integer.valueOf((String) jsonObject.get("chgerId"));
         String chargerType = (String) jsonObject.get("chgerType");
         Integer outPut = Integer.getInteger((String) jsonObject.get("outPut"));
+        Integer stat = Integer.getInteger((String) jsonObject.get("stat"));
+        Integer statUpdDt = Integer.getInteger((String) jsonObject.get("statUpdDt"));
+        Integer lastTsdt = Integer.getInteger((String) jsonObject.get("lastTsdt"));
+        Integer lastTedt = Integer.getInteger((String) jsonObject.get("lastTedt"));
+        Integer nowTsdt = Integer.getInteger((String) jsonObject.get("nowTsdt"));
 
         Charger charger = Charger.builder()
                 .chargingStation(chargingStation)
                 .chargerId(chargerId)
                 .chargerType(chargerType)
                 .outPut(outPut)
+                .stat(stat)
+                .statUpdDt(statUpdDt)
+                .lastTsdt(lastTsdt)
+                .lastTedt(lastTedt)
+                .nowTsdt(nowTsdt)
                 .build();
         jpaChargerRepository.save(charger);
         //System.out.println(charger.getChargingStation().getId().toString() + " " + charger.getId().toString());
     };
 
+    @Transactional
     public void saveChargingStation(JSONObject jsonObject) {
         String statNm = (String) jsonObject.get("statNm");
         String statId = (String) jsonObject.get("statId");
@@ -108,7 +126,12 @@ public class StationService{
         String note = (String) jsonObject.get("note");
         Boolean limitYn = checkLimitYn((String) jsonObject.get("limitYn"));
         String limitDetail = (String) jsonObject.get("limitDetail");
+        String businessId = (String) jsonObject.get("busiId");
+        Long zcodeId = Long.parseLong((String) jsonObject.get("zcode"));
+        //System.out.println(businessId + "/ " + zcodeId);
 
+        Business byBusinessId = jpaBusinessRepository.findByBusinessId(businessId);
+        Zcode referenceById = jpaZcodeRepository.findByZcode(zcodeId);
         ChargingStation chargingStation = ChargingStation.builder()
                 .statNm(statNm)
                 .statId(statId)
@@ -121,6 +144,8 @@ public class StationService{
                 .note(note)
                 .limitYn(limitYn)
                 .limitDetail(limitDetail)
+                .business(byBusinessId)
+                .zcode(referenceById)
                 .build();
 
         ChargingStation findChargingStation = jpaStationRepository.findByStatId(statId);
@@ -139,74 +164,73 @@ public class StationService{
 
 
     @Transactional
-    public void saveChargingStationData(Boolean isBusiness) {
-        for (int i = 1; i < 14; i++) {
-            try {
-                //used to create a mutable
-                StringBuilder result = new StringBuilder();
+    public void saveChargingStationData(Boolean isBusiness, Integer page) {
+        try {
+            //used to create a mutable
+            StringBuilder result = new StringBuilder();
 
-                //openApi address
-                String apiUrl = "http://apis.data.go.kr/B552584/EvCharger/getChargerInfo?" +
-                        "serviceKey=" + key +
-                        "&numOfRows=9999" +
-                        "&pageNo=" + i +
-                        "&dataType=JSON";
-                URL url = new URL(apiUrl);
+            //openApi address
+            String apiUrl = "http://apis.data.go.kr/B552584/EvCharger/getChargerInfo?" +
+                    "serviceKey=" + key +
+                    "&numOfRows=1000" +
+                    "&pageNo=" + page.toString() +
+                    "&dataType=JSON";
+            URL url = new URL(apiUrl);
 
-                //connection with api
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
+            //connection with api
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
 
-                BufferedReader br;
+            BufferedReader br;
 
-                br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
-                String returnLine;
+            br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+            String returnLine;
 
-                while ((returnLine = br.readLine()) != null) {
-                    result.append(returnLine + "\n\r");
-                }
-
-                //urlConnection.disconnect();
-
-                //extract the data which we need
-                JSONObject jsonObject;
-                JSONParser jsonParser = new JSONParser();
-                JSONObject jsonObj = (JSONObject) jsonParser.parse(result.toString());
-                JSONObject parseResponse = (JSONObject) jsonObj.get("items");
-                // System.out.println(parseResponse.toJSONString());
-                //JSONObject parseBody = (JSONObject) parseResponse.get("item");
-
-                JSONArray array = (JSONArray) parseResponse.get("item");
-                //System.out.println(array.toJSONString());
-
-                //pick the data from array
-                for (Object chargingStationJson : array) {
-
-                    jsonObject = (JSONObject) chargingStationJson;
-                    //System.out.println(jsonObject);
-
-                    if (isBusiness) saveBusiness(jsonObject); //save the data to business
-                    else saveChargingStation(jsonObject); //save the data to charging station & charger
-
-                }
-
-            } catch (ParseException | MalformedURLException e) {
-                e.printStackTrace();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            while ((returnLine = br.readLine()) != null) {
+                result.append(returnLine + "\n\r");
             }
-            System.out.println("page : " + i);
+
+            urlConnection.disconnect();
+
+            //extract the data which we need
+            JSONObject jsonObject;
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObj = (JSONObject) jsonParser.parse(result.toString());
+            JSONObject parseResponse = (JSONObject) jsonObj.get("items");
+            // System.out.println(parseResponse.toJSONString());
+            //JSONObject parseBody = (JSONObject) parseResponse.get("item");
+
+            JSONArray array = (JSONArray) parseResponse.get("item");
+            //System.out.println(array.toJSONString());
+
+            //pick the data from array
+            for (Object chargingStationJson : array) {
+
+                jsonObject = (JSONObject) chargingStationJson;
+                //System.out.println(jsonObject);
+
+                if (isBusiness) saveBusiness(jsonObject); //save the data to business
+                else saveChargingStation(jsonObject); //save the data to charging station & charger
+
+            }
+
+        } catch (ParseException | MalformedURLException e) {
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        System.out.println("success: "+page);
     }
 
     public ChargingStation findStation(String statId) {
         ChargingStation chargingStation = jpaStationRepository.findByStatId(statId);
         return chargingStation;
     }
+
 
     public List<StationResDto> findStationByStatNm(String statNm) {
         List<ChargingStation> stations = jpaStationRepository.findByStatNmContaining(statNm);
