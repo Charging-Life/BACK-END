@@ -21,5 +21,6 @@ public class Car {
     public Car(String car, Member member) {
         this.car = car;
         this.member = member;
+        member.addCar(this);
     }
 }

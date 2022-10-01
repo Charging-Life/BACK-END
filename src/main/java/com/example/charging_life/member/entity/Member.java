@@ -34,13 +34,12 @@ public class Member implements UserDetails {
     private List<MemberChargingStation> memberChargingStations = new ArrayList<>();
 
     @Builder
-    public Member(String email, String password, String name, String phone, Auth auth, Car car) {
+    public Member(String email, String password, String name, String phone, Auth auth) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.phone = phone;
         this.auth = auth;
-        this.cars.add(car);
     }
 
     public void addBusiness(MemberBusiness memberBusiness) {
@@ -49,6 +48,10 @@ public class Member implements UserDetails {
 
     public void addChargingStation(MemberChargingStation memberChargingStation) {
         this.memberChargingStations.add(memberChargingStation);
+    }
+
+    public void addCar(Car car) {
+        this.cars.add(car);
     }
 
     @Override
