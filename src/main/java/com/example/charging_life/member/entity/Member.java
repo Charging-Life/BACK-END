@@ -1,6 +1,7 @@
 package com.example.charging_life.member.entity;
 
 
+import com.example.charging_life.car.Car;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
