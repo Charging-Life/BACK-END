@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class EmailService {
@@ -28,24 +30,28 @@ public class EmailService {
     @Value("${email}")
     private String from;
 
+    @Transactional
     public String certifyEmail(EmailDto emailDto) {
 
         Optional<Member> member = jpaMemberRepo.findByEmail(emailDto.getEmail());
+        Optional<Email> findEmail = jpaEmailRepo.findByEmail(emailDto.getEmail());
+        String code = makeCode();
         if (member.isPresent()) {
             throw new CustomException(ExceptionEnum.EmailDuplicated);
+        } else if(findEmail.isPresent()) {
+            findEmail.get().updateCode(code);
         } else {
-            String code = makeCode();
-            jpaEmailRepo.save(new Email(emailDto.getEmail(), code));
-            sendCodeToEmail(code,emailDto.getEmail());
-            return code;
+            jpaEmailRepo.save(new Email(code,emailDto.getEmail()));
         }
+        sendCodeToEmail(code,emailDto.getEmail());
+        return code;
     }
 
     public Boolean confirmCode(String code, String email) {
-
         Email findEmail = jpaEmailRepo.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ExceptionEnum.EmailNotExisted));
-        if (findEmail.getCreateTime().isBefore(LocalDateTime.now().plusMinutes(3))) {
+        if (findEmail.getCreateTime().isAfter(LocalDateTime.now().plusMinutes(3))) {
+            jpaEmailRepo.delete(findEmail);
             throw new CustomException(ExceptionEnum.Codeexpired);
         } else if (findEmail.getCode().equals(code)) {
             return true;
@@ -54,10 +60,13 @@ public class EmailService {
         }
     }
 
+    @Transactional
     public void reissueCode(EmailDto emailDto) {
         Email email = jpaEmailRepo.findByEmail(emailDto.getEmail())
                 .orElseThrow(() -> new CustomException(ExceptionEnum.EmailNotExisted));
-        sendCodeToEmail(makeCode(),email.getEmail());
+        String code = makeCode();
+        email.updateCode(code);
+        sendCodeToEmail(code,email.getEmail());
     }
 
     public String makeCode() {

@@ -13,6 +13,7 @@ public class Email {
     @Id @GeneratedValue
     private Long Id;
     private String code;
+    @Column(unique = true)
     private String email;
     private LocalDateTime createTime;
 
@@ -22,7 +23,8 @@ public class Email {
         this.createTime = LocalDateTime.now();
     }
 
-    public void updateTime() {
-        createTime = LocalDateTime.now();
+    public void updateCode(String code) {
+        this.code = code;
+        this.createTime = LocalDateTime.now();
     }
 }
