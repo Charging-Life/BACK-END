@@ -1,9 +1,6 @@
 package com.example.charging_life.station.dto;
 
-import com.example.charging_life.station.entity.Business;
-import com.example.charging_life.station.entity.Charger;
-import com.example.charging_life.station.entity.ChargingStation;
-import com.example.charging_life.station.entity.Zcode;
+import com.example.charging_life.station.entity.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,9 +20,9 @@ public class ChargingStationDto {
     private Double lng;
     private String useTime;
     private BusinessDto business;
-    private Boolean parkingFree;
+    private Integer parkingFree;
     private String note;
-    private Boolean limitYn;
+    private Integer limitYn;
     private String limitDetail;
     private Long zcode;
     private String city;
@@ -61,15 +58,15 @@ class ChargerDto {
     private String chargerType;
     private Integer outPut;
     private Integer stat;
-    private Integer statUpdDt;
-    private Integer lastTsdt;
-    private Integer lastTedt;
-    private Integer nowTsdt;
+    private Long statUpdDt;
+    private Long lastTsdt;
+    private Long lastTedt;
+    private Long nowTsdt;
 
     public ChargerDto(Charger charger) {
         this.chargerId = charger.getChargerId();;
         this.chargerType = charger.getChargerType();
-        this.outPut = charger.getOutPut();
+        this.outPut = charger.getOutput();
         this.stat = charger.getStat();
         this.statUpdDt = charger.getStatUpdDt();
         this.lastTsdt = charger.getLastTsdt();
