@@ -50,11 +50,11 @@ public class StationController {
         stationService.saveChargingStationData(false,true);
     }
 
-//    @Operation(summary = "5분마다 공공 api 갱신", description = " 5분마다 수행하여 성공하면 공공 api를 갱신하여 Charger 데이터베이스에 update")
-//    @Scheduled(fixedDelay = 18000000)
-//    public void updateCharger() throws IOException, ParseException {
-//        stationService.updateChargerData();
-//    }
+    @Operation(summary = "5분마다 공공 api 갱신", description = " 5분마다 수행하여 성공하면 공공 api를 갱신하여 Charger 데이터베이스에 update")
+    @Scheduled(fixedDelay = 18000000)
+    public void updateCharger() throws IOException, ParseException {
+        stationService.updateChargerData();
+    }
 
     @Operation(summary = "공공 api 받아오기", description = "성공하면 공공 api를 Business 데이터베이스에 저장")
     @GetMapping("/business/api")
