@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,6 +23,11 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+
+@Tag(name = "ChargingStaion API" , description = "<공공 api 받아오는 API>" + "\n\n" +
+        "⏰ 매주 금요일 5:00 AM 마다 새로운 충전소의 공공 api를 Business 데이터베이스에 저장 " + "\n\n" +
+        "⏰ 매주 금요일 5:30 AM 마다 새로운 충전소의 공공 api를 ChargingStation & Charger 데이터베이스에 저장" + "\n\n" +
+        "⏰ 5분마다 수행하여 성공하면 공공 api를 갱신하여 Charger 데이터베이스에 update")
 public class StationController {
     @Value("${key.serviceKey}")
     private String key;
