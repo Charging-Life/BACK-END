@@ -98,6 +98,7 @@ public class StationService{
         jpaStationAnalysisRepository.save(stationAnalysis);
     }
 
+    //Process for verifying that output data exists.
     public Integer put(JSONObject jsonObject, Boolean isoutput) {
         if (isoutput) {
             return null;
@@ -108,6 +109,7 @@ public class StationService{
         }
     }
 
+    //Process for verifying that statUpdDt data exists.
     public Long UpdDt(JSONObject jsonObject, Boolean isstatUpdDt) {
         if (isstatUpdDt) {
             return null;
@@ -118,6 +120,7 @@ public class StationService{
         }
     }
 
+    //Process for verifying that lastTsdt data exists.
     public Long Tsdt(JSONObject jsonObject, Boolean islastTsdt) {
         if (islastTsdt) {
             return null;
@@ -127,6 +130,8 @@ public class StationService{
             return lastTs;
         }
     }
+
+    //Process for verifying that lastTedt data exists.
     public Long Tedt(JSONObject jsonObject, Boolean islastTedt) {
         if (islastTedt) {
             return null;
@@ -137,6 +142,7 @@ public class StationService{
         }
     }
 
+    //Process for verifying that nowTsdt data exists.
     public Long now(JSONObject jsonObject, Boolean isnow) {
         if (isnow) {
             return null;
@@ -146,6 +152,7 @@ public class StationService{
             return nowTs;
         }
     }
+
     //save the data to charger
     @Transactional
     public void saveCharger(JSONObject jsonObject, ChargingStation chargingStation){
@@ -184,6 +191,7 @@ public class StationService{
         //System.out.println(charger.getChargingStation().getId().toString() + " " + charger.getId().toString());
     }
 
+    //save the data to ChargingStation
     @Transactional
     public void saveChargingStation(JSONObject jsonObject) {
         String statNm = (String) jsonObject.get("statNm");
@@ -223,11 +231,14 @@ public class StationService{
         ChargingStation findChargingStation = jpaStationRepository.findByStatId(statId);
         //System.out.println(findchargingStation);
 
+        //if the data isn't exist in database then stored in both ChargingStation and Charger
         if (findChargingStation == null) {
             ChargingStation saveChargingStation = jpaStationRepository.save(chargingStation);
             //save the data to charger
             saveCharger(jsonObject, saveChargingStation);
-        } else {
+        }
+        //if the data is exist in database then stored in only Charger
+        else {
             //save the data to charger
             saveCharger(jsonObject, findChargingStation);
         }
@@ -244,11 +255,12 @@ public class StationService{
     }
 
 
+    // Main function for storing data in Business, Charger, and ChargingStaion
     @Transactional
     public void saveChargingStationData(Boolean isBusiness, Boolean isnew) throws IOException, ParseException {
-
+            // count the page
             int i = page(isnew);
-
+            // To break this function on the last page
             boolean flag = true;
 
             while (flag){
@@ -318,6 +330,7 @@ public class StationService{
             }
     }
 
+    // Update function for updating data in  Charger
     @Transactional
     public void updateChargerData() throws IOException, ParseException {
         int i = 1;
