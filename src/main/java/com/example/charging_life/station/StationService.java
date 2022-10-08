@@ -2,6 +2,8 @@ package com.example.charging_life.station;
 
 import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.member.entity.MemberChargingStation;
+import com.example.charging_life.member.entity.MemberDestination;
+import com.example.charging_life.member.repo.JpaMemberDestinationRepo;
 import com.example.charging_life.station.dto.BusinessResDto;
 import com.example.charging_life.station.dto.ChargingStationDto;
 import com.example.charging_life.station.dto.StationResDto;
@@ -47,6 +49,8 @@ public class StationService{
     private final JpaBusinessRepository jpaBusinessRepository;
     //Zcode Repository
     private final JpaZcodeRepository jpaZcodeRepository;
+    //Member Station Repository
+    private final JpaMemberDestinationRepo jpaMemberDestinationRepo;
 
 
     //change the ParkingFree type to boolean
@@ -377,9 +381,12 @@ public class StationService{
     }
 
 
-    public ChargingStation findStation(String statId) {
+    public ChargingStationDto findStation(String statId) {
         ChargingStation chargingStation = jpaStationRepository.findByStatId(statId);
-        return chargingStation;
+        List<MemberDestination> toMembers = jpaMemberDestinationRepo.findByChargingStation(chargingStation);
+        ChargingStationDto chargingStationDto = new ChargingStationDto(chargingStation);
+        chargingStationDto.addMemberCount(toMembers);
+        return chargingStationDto;
     }
 
 

@@ -2,7 +2,7 @@ package com.example.charging_life.alarm;
 
 import com.example.charging_life.alarm.dto.AlarmResDto;
 import com.example.charging_life.alarm.dto.StationStat;
-import com.example.charging_life.member.JpaMemberStationRepo;
+import com.example.charging_life.member.repo.JpaMemberStationRepo;
 import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.member.entity.MemberChargingStation;
 import com.example.charging_life.station.entity.ChargingStation;

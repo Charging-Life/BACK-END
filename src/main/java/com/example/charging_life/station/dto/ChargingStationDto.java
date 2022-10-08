@@ -1,5 +1,9 @@
 package com.example.charging_life.station.dto;
 
+import com.example.charging_life.member.entity.MemberDestination;
+import com.example.charging_life.station.entity.Business;
+import com.example.charging_life.station.entity.Charger;
+import com.example.charging_life.station.entity.ChargingStation;
 import com.example.charging_life.station.entity.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +31,7 @@ public class ChargingStationDto {
     private String limitDetail;
     private Long zcode;
     private String city;
+    private Integer memberCount;
 
 
     public ChargingStationDto(ChargingStation chargingStation) {
@@ -50,6 +55,10 @@ public class ChargingStationDto {
         this.zcode = chargingStation.getZcode().getZcode();
         this.city = chargingStation.getZcode().getCity();
 
+    }
+
+    public void addMemberCount(List<MemberDestination> toMembers) {
+        this.memberCount = toMembers.size();
     }
 }
 
