@@ -70,7 +70,7 @@ public class MemberController {
         return ResponseEntity.ok(new MemberResDto(member));
     }
 
-    @Operation(summary = "충전소 관리자가 관리하는 충전소 등록")
+    @Operation(summary = "관리할 충전소 등록 또는 충전소 즐겨찾기 등록")
     @PostMapping("/member/station")
     public void enrollStation(
             @RequestHeader(name = "Authorization") String accessToken,
