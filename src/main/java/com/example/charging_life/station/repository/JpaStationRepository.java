@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface JpaStationRepository extends JpaRepository<ChargingStation, Long>{
     ChargingStation findByStatId(String statId);
+    List<ChargingStation> findByStatIdContaining(String statId);
     List<ChargingStation> findByStatNmContaining(String statNm);
 }
 

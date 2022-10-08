@@ -27,9 +27,9 @@ public class ChargingStation {
     private String useTime;
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "business_id") @JsonIgnore
     private Business business;
-    private Boolean parkingFree;
+    private Integer parkingFree;
     private String note;
-    private Boolean limitYn;
+    private Integer limitYn;
     private String limitDetail;
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "zcode_id") @JsonIgnore
     private Zcode zcode;
@@ -37,8 +37,8 @@ public class ChargingStation {
     @Builder
     public ChargingStation(String statNm, List<Charger> charger, String statId,
                            String address, String location, Double lat, Double lng,
-                           String useTime, Business business, Boolean parkingFree, String note,
-                           Boolean limitYn, String limitDetail, Zcode zcode) {
+                           String useTime, Business business, Integer parkingFree, String note,
+                           Integer limitYn, String limitDetail, Zcode zcode) {
         this.statNm = statNm;
         this.charger = charger;
         this.statId = statId;

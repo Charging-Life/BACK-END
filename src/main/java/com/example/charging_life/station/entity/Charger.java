@@ -18,20 +18,20 @@ public class Charger {
     private ChargingStation chargingStation;
     private Integer chargerId;
     private String chargerType;
-    private Integer outPut;
+    private Integer output;
     private Integer stat;
-    private Integer statUpdDt;
-    private Integer lastTsdt;
-    private Integer lastTedt;
-    private Integer nowTsdt;
+    private Long statUpdDt;
+    private Long lastTsdt;
+    private Long lastTedt;
+    private Long nowTsdt;
 
     @Builder
-    public Charger(ChargingStation chargingStation, Integer chargerId, String chargerType, Integer outPut,
-                   Integer stat, Integer statUpdDt, Integer lastTsdt, Integer lastTedt, Integer nowTsdt) {
+    public Charger(ChargingStation chargingStation, Integer chargerId, String chargerType, Integer output,
+                   Integer stat, Long statUpdDt, Long lastTsdt, Long lastTedt, Long nowTsdt) {
         this.chargingStation = chargingStation;
         this.chargerId = chargerId;
         this.chargerType = chargerType;
-        this.outPut = outPut;
+        this.output = output;
         this.stat = stat;
         this.statUpdDt = statUpdDt;
         this.lastTsdt = lastTsdt;
