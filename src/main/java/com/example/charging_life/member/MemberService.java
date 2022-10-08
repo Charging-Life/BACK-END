@@ -5,8 +5,13 @@ import com.example.charging_life.exception.ExceptionEnum;
 import com.example.charging_life.member.dto.StationReqDto;
 import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.member.entity.MemberChargingStation;
+import com.example.charging_life.member.entity.MemberDestination;
+import com.example.charging_life.member.repo.JpaMemberDestinationRepo;
+import com.example.charging_life.member.repo.JpaMemberRepo;
+import com.example.charging_life.member.repo.JpaMemberStationRepo;
 import com.example.charging_life.station.entity.ChargingStation;
 import com.example.charging_life.station.repository.ChargingStationRepository;
+import com.example.charging_life.station.repository.JpaStationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +31,8 @@ public class MemberService implements UserDetailsService {
     private final JpaMemberRepo jpaMemberRepo;
     private final ChargingStationRepository stationRepo;
     private final JpaMemberStationRepo jpaMemberStationRepo;
+    private final JpaStationRepository jpaStationRepository;
+    private final JpaMemberDestinationRepo jpaMemberDestinationRepo;
 
     public void join(Member member) {
         jpaMemberRepo.save(member);
@@ -51,6 +58,13 @@ public class MemberService implements UserDetailsService {
         for (ChargingStation chargingStation : filterChargingStation) {
             jpaMemberStationRepo.save(new MemberChargingStation(member, chargingStation));
         }
+    }
+
+    @Transactional
+    public void enrollDestination(Member member, String statId) {
+        ChargingStation station = jpaStationRepository.findByStatId(statId);
+        MemberDestination memberDestination = new MemberDestination(member, station);
+        jpaMemberDestinationRepo.save(memberDestination);
     }
 
     public List<ChargingStation> removeDuplicate(List<ChargingStation> chargingStations,

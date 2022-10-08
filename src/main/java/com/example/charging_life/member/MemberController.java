@@ -87,6 +87,17 @@ public class MemberController {
         return ResponseEntity.ok(new MemberResDto(member));
     }
 
+    @PreAuthorize("hasAuthority('USER')")
+    @Operation(summary = "충전소 목적지 등록")
+    @PostMapping("/member/destination/{statId}")
+    public void enrollDestination(
+            @RequestHeader(name = "Authorization") String accessToken,
+            @PathVariable(name = "statId") String statId) {
+
+        Member member = findMemberByToken(accessToken);
+        memberService.enrollDestination(member,statId);
+    }
+
     public Member findMemberByToken(String accessToken) {
         String email = tokenService.getEmailFromToken(accessToken);
         Member member = memberService.findMemberByEmail(email);
