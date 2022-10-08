@@ -81,4 +81,9 @@ public class MemberService implements UserDetailsService {
         }
         return filterStations;
     }
+
+    public boolean checkFavorite(Member member, String statId) {
+        ChargingStation station = jpaStationRepository.findByStatId(statId);
+        return jpaMemberStationRepo.existsByMemberAndChargingStation(member, station);
+    }
 }
