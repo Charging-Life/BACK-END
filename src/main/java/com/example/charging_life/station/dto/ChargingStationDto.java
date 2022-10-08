@@ -3,7 +3,6 @@ package com.example.charging_life.station.dto;
 import com.example.charging_life.station.entity.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +12,14 @@ import java.util.List;
 public class ChargingStationDto {
     private Long id;
     private String statNm;
-    private List<ChargerResDto> chargers = new ArrayList<>();
+    private List<ChargerDto> chargers = new ArrayList<>();
     private String statId;
     private String address;
     private String location;
     private Double lat;
     private Double lng;
     private String useTime;
-    private BusinessResDto business;
+    private BusinessDto business;
     private Integer parkingFree;
     private String note;
     private Integer limitYn;
@@ -37,12 +36,12 @@ public class ChargingStationDto {
         this.location = chargingStation.getLocation();
         List<Charger> chargers = chargingStation.getCharger();
         for (Charger charger : chargers) {
-            this.chargers.add(new ChargerResDto(charger));
+            this.chargers.add(new ChargerDto(charger));
         }
         this.lat = chargingStation.getLat();
         this.lng = chargingStation.getLng();
         this.useTime = chargingStation.getUseTime();
-        this.business = new BusinessResDto(chargingStation.getBusiness());
+        this.business = new BusinessDto(chargingStation.getBusiness());
         this.parkingFree = chargingStation.getParkingFree();
         this.note = chargingStation.getNote();
         this.limitYn = chargingStation.getLimitYn();
