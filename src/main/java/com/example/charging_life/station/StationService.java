@@ -2,16 +2,19 @@ package com.example.charging_life.station;
 
 import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.member.entity.MemberChargingStation;
+import com.example.charging_life.station.dto.BusinessResDto;
 import com.example.charging_life.station.dto.ChargingStationDto;
 import com.example.charging_life.station.dto.StationResDto;
 import com.example.charging_life.station.entity.*;
 import com.example.charging_life.station.repository.*;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,82 +101,31 @@ public class StationService{
         jpaStationAnalysisRepository.save(stationAnalysis);
     }
 
-    //Process for verifying that output data exists.
-    public Integer put(JSONObject jsonObject, Boolean isoutput) {
-        if (isoutput) {
+    //Process for verifying that output, statUpdDt, lastTsdt, lastTedt, nowTsdt data exists.
+    public Long verify(JSONObject jsonObject, String check) {
+        Boolean nullCheck = jsonObject.get(check).equals("");
+        if (nullCheck) {
             return null;
         }
         else {
-            Integer out = Integer.valueOf((String) jsonObject.get("output"));
-            return out;
-        }
-    }
-
-    //Process for verifying that statUpdDt data exists.
-    public Long UpdDt(JSONObject jsonObject, Boolean isstatUpdDt) {
-        if (isstatUpdDt) {
-            return null;
-        }
-        else {
-            Long statUpd = Long.valueOf((String) jsonObject.get("statUpdDt"));
-            return statUpd;
-        }
-    }
-
-    //Process for verifying that lastTsdt data exists.
-    public Long Tsdt(JSONObject jsonObject, Boolean islastTsdt) {
-        if (islastTsdt) {
-            return null;
-        }
-        else {
-            Long lastTs = Long.valueOf((String) jsonObject.get("lastTsdt"));
-            return lastTs;
-        }
-    }
-
-    //Process for verifying that lastTedt data exists.
-    public Long Tedt(JSONObject jsonObject, Boolean islastTedt) {
-        if (islastTedt) {
-            return null;
-        }
-        else {
-            Long lastTe = Long.valueOf((String) jsonObject.get("lastTedt"));
-            return lastTe;
-        }
-    }
-
-    //Process for verifying that nowTsdt data exists.
-    public Long now(JSONObject jsonObject, Boolean isnow) {
-        if (isnow) {
-            return null;
-        }
-        else {
-            Long nowTs = Long.valueOf((String) jsonObject.get("nowTsdt"));
-            return nowTs;
+            Long result = Long.valueOf((String) jsonObject.get(check));
+            return result;
         }
     }
 
     //save the data to charger
     @Transactional
     public void saveCharger(JSONObject jsonObject, ChargingStation chargingStation){
+
+
         Integer chargerId = Integer.valueOf((String) jsonObject.get("chgerId"));
         String chargerType = (String) jsonObject.get("chgerType");
-
-        Boolean isoutput = jsonObject.get("output").equals("");
-        Integer output = put(jsonObject, isoutput);
+        Integer output = Math.toIntExact(verify(jsonObject, "output"));
         Integer stat = Integer.valueOf((String) jsonObject.get("stat"));
-
-        Boolean isstatUpdDt = jsonObject.get("statUpdDt").equals("");
-        Long statUpdDt = UpdDt(jsonObject, isstatUpdDt);
-
-        Boolean islastTsdt = jsonObject.get("lastTsdt").equals("");
-        Long lastTsdt = Tsdt(jsonObject, islastTsdt);
-
-        Boolean islastTedt = jsonObject.get("lastTedt").equals("");
-        Long lastTedt = Tedt(jsonObject, islastTedt);
-
-        Boolean isnow = jsonObject.get("nowTsdt").equals("");
-        Long nowTsdt = now(jsonObject, isnow);
+        Long statUpdDt = verify(jsonObject, "statUpdDt");
+        Long lastTsdt = verify(jsonObject, "lastTsdt");
+        Long lastTedt = verify(jsonObject, "lastTedt");
+        Long nowTsdt = verify(jsonObject, "nowTsdt");
 
 //        System.out.println(output +"/"+ stat +"/"+ statUpdDt);
         Charger charger = Charger.builder()
@@ -326,11 +278,14 @@ public class StationService{
                     i++; // if there is still a page left, increase it
                 } else {
                     flag = false; // if the page number is the same as last page number, then stop the loop
+                    updateChargerData();
                 }
             }
     }
 
     // Update function for updating data in  Charger
+    @Operation(summary = "5분마다 공공 api 갱신", description = " 5분마다 수행하여 성공하면 공공 api를 갱신하여 Charger 데이터베이스에 update")
+    @Scheduled(fixedDelay = 18000000)
     @Transactional
     public void updateChargerData() throws IOException, ParseException {
         int i = 1;
@@ -391,25 +346,18 @@ public class StationService{
                     Long findcharger = jpaChargerRepository.findTop1ByChargingStation_IdAndChargerId(findId, chargerId).getId();
                     if (findcharger != null) {
 //                Long findcharger = jpaChargerRepository.findByChargingStationId(findStation(statId).getId()).getId();
-                    Integer stat = Integer.valueOf((String) jsonObject.get("stat"));
+                        Integer stat = Integer.valueOf((String) jsonObject.get("stat"));
 
-                    Boolean isstatUpdDt = jsonObject.get("statUpdDt").equals("");
-                    Long statUpdDt = UpdDt(jsonObject, isstatUpdDt);
+                        Long statUpdDt = verify(jsonObject, "statUpdDt");
+                        Long lastTsdt = verify(jsonObject, "lastTsdt");
+                        Long lastTedt = verify(jsonObject, "lastTedt");
+                        Long nowTsdt = verify(jsonObject, "nowTsdt");
 
-                    Boolean islastTsdt = jsonObject.get("lastTsdt").equals("");
-                    Long lastTsdt = Tsdt(jsonObject, islastTsdt);
-
-                    Boolean islastTedt = jsonObject.get("lastTedt").equals("");
-                    Long lastTedt = Tedt(jsonObject, islastTedt);
-
-                    Boolean isnow = jsonObject.get("nowTsdt").equals("");
-                    Long nowTsdt = now(jsonObject, isnow);
-
-                    jpaChargerRepository.updateStat(stat, findcharger);
-                    jpaChargerRepository.updateStatUpdDt(statUpdDt, findcharger);
-                    jpaChargerRepository.updateLastTsdt(lastTsdt, findcharger);
-                    jpaChargerRepository.updateLastTedt(lastTedt, findcharger);
-                    jpaChargerRepository.updateNowTsdt(nowTsdt, findcharger);
+                        jpaChargerRepository.updateStat(stat, findcharger);
+                        jpaChargerRepository.updateStatUpdDt(statUpdDt, findcharger);
+                        jpaChargerRepository.updateLastTsdt(lastTsdt, findcharger);
+                        jpaChargerRepository.updateLastTedt(lastTedt, findcharger);
+                        jpaChargerRepository.updateNowTsdt(nowTsdt, findcharger);
                     }
                     else{
                         continue;
