@@ -7,6 +7,7 @@ import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.member.entity.MemberChargingStation;
 import com.example.charging_life.station.entity.ChargingStation;
 import com.example.charging_life.station.repository.ChargingStationRepository;
+import com.example.charging_life.station.repository.JpaStationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +27,7 @@ public class MemberService implements UserDetailsService {
     private final JpaMemberRepo jpaMemberRepo;
     private final ChargingStationRepository stationRepo;
     private final JpaMemberStationRepo jpaMemberStationRepo;
+    private final JpaStationRepository jpaStationRepository;
 
     public void join(Member member) {
         jpaMemberRepo.save(member);
@@ -66,5 +68,10 @@ public class MemberService implements UserDetailsService {
             if(!dup) filterStations.add(chargingStation);
         }
         return filterStations;
+    }
+
+    public boolean checkFavorite(Member member, String statId) {
+        ChargingStation station = jpaStationRepository.findByStatId(statId);
+        return jpaMemberStationRepo.existsByMemberAndChargingStation(member, station);
     }
 }

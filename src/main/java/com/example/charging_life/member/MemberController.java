@@ -79,6 +79,15 @@ public class MemberController {
         memberService.enrollStation(member, stationReqDto);
     }
 
+    @Operation(summary = "충전소 즐겨찾기 여부 조회")
+    @GetMapping("member/station/{statId}")
+    public ResponseEntity<Boolean> checkFavorite(
+            @RequestHeader(name = "Authorization") String accessToken,
+            @RequestParam String statId) {
+        Member member = findMemberByToken(accessToken);
+        return ResponseEntity.ok(memberService.checkFavorite(member,statId));
+    }
+
     @PreAuthorize("hasAuthority('COMPANY')")
     @Operation(summary = "기업 회원정보 조회")
     @GetMapping("/member/company")
