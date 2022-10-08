@@ -2,7 +2,7 @@ package com.example.charging_life.email;
 
 import com.example.charging_life.exception.CustomException;
 import com.example.charging_life.exception.ExceptionEnum;
-import com.example.charging_life.member.JpaMemberRepo;
+import com.example.charging_life.member.repo.JpaMemberRepo;
 import com.example.charging_life.member.dto.EmailDto;
 import com.example.charging_life.member.entity.Member;
 import lombok.RequiredArgsConstructor;

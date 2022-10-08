@@ -1,4 +1,4 @@
-package com.example.charging_life.member;
+package com.example.charging_life.member.repo;
 
 import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.member.entity.MemberChargingStation;

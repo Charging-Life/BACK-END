@@ -2,6 +2,8 @@ package com.example.charging_life.station;
 
 import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.member.entity.MemberChargingStation;
+import com.example.charging_life.member.entity.MemberDestination;
+import com.example.charging_life.member.repo.JpaMemberDestinationRepo;
 import com.example.charging_life.station.dto.BusinessResDto;
 import com.example.charging_life.station.dto.ChargingStationDto;
 import com.example.charging_life.station.dto.StationResDto;
@@ -47,6 +49,8 @@ public class StationService{
     private final JpaBusinessRepository jpaBusinessRepository;
     //Zcode Repository
     private final JpaZcodeRepository jpaZcodeRepository;
+    //Member Station Repository
+    private final JpaMemberDestinationRepo jpaMemberDestinationRepo;
 
 
     //change the ParkingFree type to boolean
@@ -278,14 +282,11 @@ public class StationService{
                     i++; // if there is still a page left, increase it
                 } else {
                     flag = false; // if the page number is the same as last page number, then stop the loop
-                    updateChargerData();
                 }
             }
     }
 
     // Update function for updating data in  Charger
-    @Operation(summary = "5분마다 공공 api 갱신", description = " 5분마다 수행하여 성공하면 공공 api를 갱신하여 Charger 데이터베이스에 update")
-    @Scheduled(fixedDelay = 18000000)
     @Transactional
     public void updateChargerData() throws IOException, ParseException {
         int i = 1;
@@ -380,9 +381,12 @@ public class StationService{
     }
 
 
-    public ChargingStation findStation(String statId) {
+    public ChargingStationDto findStation(String statId) {
         ChargingStation chargingStation = jpaStationRepository.findByStatId(statId);
-        return chargingStation;
+        List<MemberDestination> toMembers = jpaMemberDestinationRepo.findByChargingStation(chargingStation);
+        ChargingStationDto chargingStationDto = new ChargingStationDto(chargingStation);
+        chargingStationDto.addMemberCount(toMembers);
+        return chargingStationDto;
     }
 
 
@@ -403,4 +407,15 @@ public class StationService{
         }
         return stationResDtos;
     }
+
+    public List<StationResDto> findStationByCity(String city) {
+        Long cityId = jpaZcodeRepository.findByCity(city).getId();
+        List<ChargingStation> stations = jpaStationRepository.findByZcode_Id(cityId);
+        List<StationResDto> stationResDtos = new ArrayList<>();
+        for (ChargingStation chargingStation : stations) {
+            stationResDtos.add(new StationResDto(chargingStation));
+        }
+        return stationResDtos;
+    }
+
 }

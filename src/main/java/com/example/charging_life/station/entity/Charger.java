@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class Charger {
 
     @Id @GeneratedValue
-    private Long Id;
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "charging_station_id") @JsonIgnore
     private ChargingStation chargingStation;
     private Integer chargerId;
