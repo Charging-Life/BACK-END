@@ -4,7 +4,9 @@ import com.example.charging_life.station.entity.Charger;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface JpaChargerRepository extends JpaRepository<Charger, Long> {
     Charger findByChargerId(Integer chargerId);
     Charger findTop1ByChargingStation_IdAndChargerId(Long chargingStationId, Integer chargerId);

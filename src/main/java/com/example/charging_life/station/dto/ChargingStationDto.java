@@ -7,6 +7,7 @@ import com.example.charging_life.station.entity.ChargingStation;
 import com.example.charging_life.station.entity.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +17,14 @@ import java.util.List;
 public class ChargingStationDto {
     private Long id;
     private String statNm;
-    private List<ChargerDto> chargers = new ArrayList<>();
+    private List<ChargerResDto> chargers = new ArrayList<>();
     private String statId;
     private String address;
     private String location;
     private Double lat;
     private Double lng;
     private String useTime;
-    private BusinessDto business;
+    private BusinessResDto business;
     private Integer parkingFree;
     private String note;
     private Integer limitYn;
@@ -41,12 +42,12 @@ public class ChargingStationDto {
         this.location = chargingStation.getLocation();
         List<Charger> chargers = chargingStation.getCharger();
         for (Charger charger : chargers) {
-            this.chargers.add(new ChargerDto(charger));
+            this.chargers.add(new ChargerResDto(charger));
         }
         this.lat = chargingStation.getLat();
         this.lng = chargingStation.getLng();
         this.useTime = chargingStation.getUseTime();
-        this.business = new BusinessDto(chargingStation.getBusiness());
+        this.business = new BusinessResDto(chargingStation.getBusiness());
         this.parkingFree = chargingStation.getParkingFree();
         this.note = chargingStation.getNote();
         this.limitYn = chargingStation.getLimitYn();

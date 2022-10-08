@@ -17,7 +17,7 @@ public class Zcode {
 
     @Id
     @GeneratedValue
-    private Long Id;
+    private Long id;
     private Long zcode;
     private String city;
     @OneToMany(mappedBy = "zcode")
