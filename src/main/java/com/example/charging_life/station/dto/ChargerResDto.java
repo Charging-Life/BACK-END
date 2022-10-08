@@ -4,7 +4,7 @@ import com.example.charging_life.station.entity.Charger;
 import lombok.Getter;
 
 @Getter
-public class ChargerDto {
+public class ChargerResDto {
     private Integer chargerId;
     private String chargerType;
     private Integer outPut;
@@ -14,7 +14,7 @@ public class ChargerDto {
     private Long lastTedt;
     private Long nowTsdt;
 
-    public ChargerDto(Charger charger) {
+    public ChargerResDto(Charger charger) {
         this.chargerId = charger.getChargerId();
         this.chargerType = charger.getChargerType();
         this.outPut = charger.getOutput();
