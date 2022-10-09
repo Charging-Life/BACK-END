@@ -368,17 +368,20 @@ public class StationService{
         }
     }
 
+    // It is a function to know how much data there was before
     public Integer findStationAnalysis() {
         Integer count = jpaStationAnalysisRepository.findByOrderByIdDesc().getCountStatation();
         return count;
     }
 
 
+    // It is the station information function that comes out when we look for the station ID
     public ChargingStation findStation(String statId) {
         ChargingStation chargingStation = jpaStationRepository.findByStatId(statId);
         return chargingStation;
     }
 
+    //It is a function that shows station information by customizing it differently for each member
     public List<ChargingStationDto> findStationByManager(Member member) {
         List<ChargingStationDto> stationResDtos = new ArrayList<>();
         for (MemberChargingStation memberStation : member.getMemberChargingStations()) {
@@ -388,6 +391,7 @@ public class StationService{
         return stationResDtos;
     }
 
+    // It is the station information function that comes out when we look for the station name
     public List<StationResDto> findStationByStatNm(String statNm) {
         List<ChargingStation> stationsByStatNm = jpaStationRepository.findByStatNmContaining(statNm);
         List<StationResDto> stationResDtos = new ArrayList<>();
