@@ -83,7 +83,7 @@ public class MemberController {
     @GetMapping("member/station/{statId}")
     public ResponseEntity<Boolean> checkFavorite(
             @RequestHeader(name = "Authorization") String accessToken,
-            @RequestParam String statId) {
+            @PathVariable String statId) {
         Member member = findMemberByToken(accessToken);
         return ResponseEntity.ok(memberService.checkFavorite(member,statId));
     }
