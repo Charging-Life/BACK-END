@@ -2,19 +2,16 @@ package com.example.charging_life.station;
 
 import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.member.entity.MemberChargingStation;
-import com.example.charging_life.station.dto.BusinessResDto;
 import com.example.charging_life.station.dto.ChargingStationDto;
 import com.example.charging_life.station.dto.StationResDto;
 import com.example.charging_life.station.entity.*;
 import com.example.charging_life.station.repository.*;
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -382,16 +379,6 @@ public class StationService{
         return chargingStation;
     }
 
-
-    public List<StationResDto> findStationByStatNm(String statNm) {
-        List<ChargingStation> stations = jpaStationRepository.findByStatNmContaining(statNm);
-        List<StationResDto> stationResDtos = new ArrayList<>();
-        for (ChargingStation chargingStation : stations) {
-            stationResDtos.add(new StationResDto(chargingStation));
-        }
-        return stationResDtos;
-    }
-
     public List<ChargingStationDto> findStationByManager(Member member) {
         List<ChargingStationDto> stationResDtos = new ArrayList<>();
         for (MemberChargingStation memberStation : member.getMemberChargingStations()) {
@@ -401,14 +388,35 @@ public class StationService{
         return stationResDtos;
     }
 
-    public List<StationResDto> findStationByCity(String city) {
-        Long cityId = jpaZcodeRepository.findByCity(city).getId();
-        List<ChargingStation> stations = jpaStationRepository.findByZcode_Id(cityId);
+    public List<StationResDto> findStationByStatNm(String statNm) {
+        List<ChargingStation> stationsByStatNm = jpaStationRepository.findByStatNmContaining(statNm);
         List<StationResDto> stationResDtos = new ArrayList<>();
-        for (ChargingStation chargingStation : stations) {
+        for (ChargingStation chargingStation : stationsByStatNm) {
             stationResDtos.add(new StationResDto(chargingStation));
         }
         return stationResDtos;
+    }
+
+
+    public List<StationResDto> findStationByCity(String city) {
+        Long cityId = jpaZcodeRepository.findByCity(city).getId();
+        List<ChargingStation> stationsByCity = jpaStationRepository.findByZcode_Id(cityId);
+        List<StationResDto> stationResDtos = new ArrayList<>();
+        for (ChargingStation chargingStation : stationsByCity) {
+            stationResDtos.add(new StationResDto(chargingStation));
+        }
+        return stationResDtos;
+    }
+
+    public List<StationResDto> findStationByBusiness(String business) {
+        Long businessId = jpaBusinessRepository.findByBusiness(business).getId();
+        List<ChargingStation> stationsByBusiness = jpaStationRepository.findByBusiness_Id(businessId);
+        List<StationResDto> stationResDtos = new ArrayList<>();
+        for (ChargingStation chargingStation : stationsByBusiness) {
+            stationResDtos.add(new StationResDto(chargingStation));
+        }
+        return stationResDtos;
+
     }
 
 }

@@ -5,7 +5,6 @@ import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.station.dto.ChargingStationDto;
 import com.example.charging_life.station.dto.StationResDto;
 import com.example.charging_life.station.entity.ChargingStation;
-import com.example.charging_life.station.entity.Zcode;
 import com.example.charging_life.token.TokenService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -77,16 +76,20 @@ public class StationController {
         return ResponseEntity.ok(new ChargingStationDto(chargingStation));
     }
 
-    @Operation(summary = "충전소 검색", description = "충전소 이름(statNm) 또는 광역시,도명(city)을 이용해 충전소를 검색할 수 있다.")
+    @Operation(summary = "충전소 검색", description = "충전소 이름(statNm) or 광역시,도명(city) or 기업명(business)를 이용해 충전소를 검색할 수 있다.")
     @GetMapping("/station")
     public ResponseEntity<List<StationResDto>> getStationByQurey(@Parameter(name = "statNm", description = "?statNm=주차장")@RequestParam(value = "statNm", required = false) String statNm,
-                                                                 @Parameter(name = "city", description = "?city=서울특별시")@RequestParam(value = "city", required = false) String city
+                                                                 @Parameter(name = "city", description = "?city=서울특별시")@RequestParam(value = "city", required = false) String city,
+                                                                 @Parameter(name = "business", description = "?business=환경부")@RequestParam(value = "business", required = false) String business
                                                                   ) {
         if (statNm != null) {
             return ResponseEntity.ok(stationService.findStationByStatNm(statNm));
         }
+        else if (city != null){
+            return ResponseEntity.ok(stationService.findStationByCity(city));
+        }
         else {
-        return ResponseEntity.ok(stationService.findStationByCity(city));
+            return ResponseEntity.ok(stationService.findStationByBusiness(business));
         }
     }
 

@@ -11,6 +11,8 @@ import java.util.List;
 public interface JpaStationRepository extends JpaRepository<ChargingStation, Long>{
     ChargingStation findByStatId(String statId);
     List<ChargingStation> findByZcode_Id(Long zcodeId);
+    List<ChargingStation> findByBusiness_Id(Long businessId);
     List<ChargingStation> findByStatNmContaining(String statNm);
+
 }
 
