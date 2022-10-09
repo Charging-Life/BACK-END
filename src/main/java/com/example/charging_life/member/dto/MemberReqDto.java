@@ -11,21 +11,14 @@ public class MemberReqDto {
     private String email;
     private String password;
     private String name;
-    private String phone;
+    private Auth auth;
+    private String car;
 
-    public MemberReqDto(String email, String password, String name, String phone) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.phone = phone;
-    }
-
-    public Member toEntity(String password, Auth auth){
+    public Member toEntity(String password){
         return Member.builder()
                 .email(email)
                 .name(name)
                 .password(password)
-                .phone(phone)
                 .auth(auth)
                 .build();
 

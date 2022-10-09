@@ -69,11 +69,11 @@ public class StationController {
         stationService.saveChargingStationData(true,false);
     }
 
-    @Operation(summary = "해당 statId 충전소 정보", description = "성공하면 해당 station id의 충전소 정보 받아오기 ")
+    @Operation(summary = "해당 statId 충전소 정보",
+            description = "충전소 정보와 즐겨찾기 여부 및 몇명이 접근하고있는지에 대한 정보 반환 ")
     @GetMapping("/station/{statId}")
     public ResponseEntity<ChargingStationDto> getChargingStationId(@PathVariable String statId) throws IOException {
-        ChargingStation chargingStation = stationService.findStation(statId);
-        return ResponseEntity.ok(new ChargingStationDto(chargingStation));
+        return ResponseEntity.ok(stationService.findStation(statId));
     }
 
     @Operation(summary = "충전소 검색", description = "충전소 이름(statNm) or 광역시,도명(city) or 기업명(business)를 이용해 충전소를 검색할 수 있다.")

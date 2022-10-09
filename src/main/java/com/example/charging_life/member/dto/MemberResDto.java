@@ -1,5 +1,6 @@
 package com.example.charging_life.member.dto;
 
+import com.example.charging_life.car.Car;
 import com.example.charging_life.member.entity.*;
 import lombok.Getter;
 
