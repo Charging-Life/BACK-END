@@ -401,7 +401,7 @@ public class StationService{
         return stationResDtos;
     }
 
-
+    // It is the station information function that comes out when we look for the city name
     public List<StationResDto> findStationByCity(String city) {
         Long cityId = jpaZcodeRepository.findByCity(city).getId();
         List<ChargingStation> stationsByCity = jpaStationRepository.findByZcode_Id(cityId);
@@ -412,6 +412,7 @@ public class StationService{
         return stationResDtos;
     }
 
+    // It is the station information function that comes out when we look for the business naem
     public List<StationResDto> findStationByBusiness(String business) {
         Long businessId = jpaBusinessRepository.findByBusiness(business).getId();
         List<ChargingStation> stationsByBusiness = jpaStationRepository.findByBusiness_Id(businessId);
