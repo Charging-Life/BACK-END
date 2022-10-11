@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Transactional(readOnly = false)
@@ -381,7 +382,7 @@ public class StationService{
 
 
     // It is the station information function that comes out when we look for the station ID
-    public ChargingStation findStation(String statId) {
+    public ChargingStationDto findStation(String statId) {
         ChargingStation chargingStation = jpaStationRepository.findByStatId(statId);
         List<MemberDestination> toMembers = jpaMemberDestinationRepo.findByChargingStation(chargingStation);
         ChargingStationDto chargingStationDto = new ChargingStationDto(chargingStation);
@@ -389,7 +390,6 @@ public class StationService{
         return chargingStationDto;
     }
 
-    //It is a function that shows station information by customizing it differently for each member
     public List<ChargingStationDto> findStationByManager(Member member) {
         List<ChargingStationDto> stationResDtos = new ArrayList<>();
         for (MemberChargingStation memberStation : member.getMemberChargingStations()) {
@@ -399,37 +399,52 @@ public class StationService{
         return stationResDtos;
     }
 
-    // It is the station information function that comes out when we look for the station name
-    public List<StationResDto> findStationByStatNm(String statNm) {
-        List<ChargingStation> stationsByStatNm = jpaStationRepository.findByStatNmContaining(statNm);
+    public Long fillCity(String city){
+        if (city == null) {
+            return null;
+        } else {
+            return jpaZcodeRepository.findByCity(city).getId();
+        }
+    }
+
+    public Long fillBusiness(String business){
+        if (business == null) {
+            return null;
+        } else {
+            return jpaBusinessRepository.findByBusiness(business).getId();
+        }
+    }
+
+    public String fillStationName(String statNm){
+        if (statNm == null) {
+            return null;
+        } else {
+            return statNm;
+        }
+    }
+
+    // It is the station information function that comes out when we look for the station name or city or business name
+    public List<StationResDto> findStationByQuery(String statNm, String city, String business) {
+        Optional<Long> cityId = Optional.ofNullable(fillCity(city));
+        Optional<Long> businessId = Optional.ofNullable(fillBusiness(business));
+        Optional<String> statName = Optional.ofNullable(fillStationName(statNm));
+        Long check = (cityId.stream().count() + businessId.stream().count() + statName.stream().count());
+        System.out.println("check"+check);
+        List<ChargingStation> stationsByQuery;
+        //It is the station information filtering function that comes out when we look for the station name and city and business name
+        if (check >= 2) {
+            if (check == 3) {stationsByQuery = jpaStationRepository.findByZcode_IdAndBusiness_IdAndStatNmContaining(cityId, businessId, statName);}
+            else if (cityId == null) {stationsByQuery = jpaStationRepository.findByBusiness_IdAndStatNmContaining(businessId, statName);}
+            else if (businessId == null) {stationsByQuery = jpaStationRepository.findByZcode_IdAndStatNmContaining(cityId, statName);}
+            else {{stationsByQuery = jpaStationRepository.findByZcode_IdAndBusiness_Id(cityId, businessId);}
+            }}
+        else {
+            stationsByQuery = jpaStationRepository.findByZcode_IdOrBusiness_IdOrStatNmContaining(cityId, businessId, statName);
+        }
         List<StationResDto> stationResDtos = new ArrayList<>();
-        for (ChargingStation chargingStation : stationsByStatNm) {
+        for (ChargingStation chargingStation : stationsByQuery) {
             stationResDtos.add(new StationResDto(chargingStation));
         }
         return stationResDtos;
     }
-
-    // It is the station information function that comes out when we look for the city name
-    public List<StationResDto> findStationByCity(String city) {
-        Long cityId = jpaZcodeRepository.findByCity(city).getId();
-        List<ChargingStation> stationsByCity = jpaStationRepository.findByZcode_Id(cityId);
-        List<StationResDto> stationResDtos = new ArrayList<>();
-        for (ChargingStation chargingStation : stationsByCity) {
-            stationResDtos.add(new StationResDto(chargingStation));
-        }
-        return stationResDtos;
-    }
-
-    // It is the station information function that comes out when we look for the business naem
-    public List<StationResDto> findStationByBusiness(String business) {
-        Long businessId = jpaBusinessRepository.findByBusiness(business).getId();
-        List<ChargingStation> stationsByBusiness = jpaStationRepository.findByBusiness_Id(businessId);
-        List<StationResDto> stationResDtos = new ArrayList<>();
-        for (ChargingStation chargingStation : stationsByBusiness) {
-            stationResDtos.add(new StationResDto(chargingStation));
-        }
-        return stationResDtos;
-
-    }
-
 }

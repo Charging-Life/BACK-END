@@ -81,17 +81,11 @@ public class StationController {
     public ResponseEntity<List<StationResDto>> getStationByQurey(@Parameter(name = "statNm", description = "?statNm=주차장")@RequestParam(value = "statNm", required = false) String statNm,
                                                                  @Parameter(name = "city", description = "?city=서울특별시")@RequestParam(value = "city", required = false) String city,
                                                                  @Parameter(name = "business", description = "?business=환경부")@RequestParam(value = "business", required = false) String business
-                                                                  ) {
-        if (statNm != null) {
-            return ResponseEntity.ok(stationService.findStationByStatNm(statNm));
-        }
-        else if (city != null){
-            return ResponseEntity.ok(stationService.findStationByCity(city));
-        }
-        else {
-            return ResponseEntity.ok(stationService.findStationByBusiness(business));
-        }
+    ) {
+//        System.out.println(statNm + city + business);
+        return ResponseEntity.ok(stationService.findStationByQuery(statNm, city, business));
     }
+
 
     @Operation(summary = "관리자 관할 충전소 조회", description = "관리자가 등록한 충전소 기준으로 조회한다.")
     @GetMapping("/station/manager")
