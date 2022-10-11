@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface JpaBusinessRepository extends JpaRepository<Business, Long> {
     Business findByBusinessId(String businessId);
-    List<Business> findByBusinessContaining(String business);
+    Business findByBusiness(String business);
 }

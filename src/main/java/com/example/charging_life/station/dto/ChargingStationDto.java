@@ -97,5 +97,8 @@ public class ChargingStationDto {
             this.businessCall = business.getBusinessCall();
         }
     }
+
+
+
 }
 
