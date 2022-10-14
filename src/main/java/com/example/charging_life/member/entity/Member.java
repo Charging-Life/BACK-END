@@ -1,7 +1,10 @@
 package com.example.charging_life.member.entity;
 
 
+import com.example.charging_life.board.entity.Board;
+import com.example.charging_life.board.entity.LikeMembers;
 import com.example.charging_life.car.Car;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +35,10 @@ public class Member implements UserDetails {
     private List<MemberBusiness> businesses = new ArrayList<>();
     @OneToMany(mappedBy = "member")
     private List<MemberChargingStation> memberChargingStations = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    private List<Board> boards = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    private List<LikeMembers> likeMembers = new ArrayList<>();
 
     @Builder
     public Member(String email, String password, String name, String phone, Auth auth) {
@@ -52,6 +59,12 @@ public class Member implements UserDetails {
 
     public void addCar(Car car) {
         this.cars.add(car);
+    }
+
+    public void addBoard(Board board) { this.boards.add(board); }
+
+    public void addLike(LikeMembers likeMembers) {
+        this.likeMembers.add(likeMembers);
     }
 
     @Override

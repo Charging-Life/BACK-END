@@ -46,7 +46,30 @@ public class BoardController {
             "  \"member\" : {\"id\" : 1},\n" + "\n\n"+
             "  \"statId\" : \"ME000006\",\n"+"\n\n"+
             "  \"category\" : \"FREE\"\n" + "\n\n"+
-            "}\n"+ "\n\n")
+            "}\n"+ "\n\n"+
+            "✅ 파일 업로드 할 때 \"jpeg, png, pdf\"가능"  + "\n\n"+
+            "\uD83D\uDCCC 내용" + "\n\n"+
+            "Content-Disposition: form-data; name=\"boardReqDto\""  + "\n\n"+
+            "Content-Type: application/json"  + "\n\n"+
+            "{\n" + "\n\n"+
+            "  \"title\" : \"title1\",\n" + "\n\n"+
+            "  \"description\" : \"description1\",\n" + "\n\n"+
+            "  \"member\" : {\"id\" : 1},\n" + "\n\n"+
+            "  \"statId\" : \"ME000006\",\n"+"\n\n"+
+            "  \"category\" : \"FREE\"\n" + "\n\n"+
+            "}\n"+ "\n\n"+
+            "\uD83D\uDCCC jpeg" + "\n\n"+
+            "Content-Disposition: form-data; name=\"file\""  + "\n\n"+
+            "Content-Type: image/jpeg"  + "\n\n"+
+            "파일 첨부"+ "\n\n"+
+            "\uD83D\uDCCC png" + "\n\n"+
+            "Content-Disposition: form-data; name=\"file\""  + "\n\n"+
+            "Content-Type: image/png"  + "\n\n"+
+            "파일 첨부"+ "\n\n"+
+            "\uD83D\uDCCC pdf" + "\n\n"+
+            "Content-Disposition: form-data; name=\"file\""  + "\n\n"+
+            "Content-Type: application/pdf"  + "\n\n"+
+            "파일 첨부"+ "\n\n")
     @PostMapping("/board")
     public BoardResDto create(@RequestPart(value = "boardReqDto") BoardReqDto boardReqDto,
                               @RequestPart(value = "file", required = false) List<MultipartFile> files

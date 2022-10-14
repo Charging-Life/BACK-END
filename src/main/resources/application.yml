@@ -3,6 +3,19 @@
 spring:
   profiles:
     active: dev
+  servlet:
+    multipart:
+      maxFileSize: 10MB
+      maxRequestSize: 20MB
+
+logging:
+  level:
+    org:
+      apache:
+        coyote:
+          http11: debug
+upload:
+  path: /Users/kathylee/Desktop
 
 springdoc:
   version: '@project.version@'

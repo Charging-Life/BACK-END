@@ -33,6 +33,7 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'mysql:mysql-connector-java'
+	implementation 'commons-io:commons-io:2.6'
 
 	//https://hhseong.tistory.com/173
 	implementation 'org.springframework.boot:spring-boot-starter-security'

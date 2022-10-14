@@ -2,6 +2,8 @@ package com.example.charging_life.file;
 
 import com.example.charging_life.file.dto.FileDto;
 import com.example.charging_life.file.repository.JpaFileRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -21,11 +23,16 @@ import java.io.InputStream;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "File API" , description = "<다중 파일 API>" + "\n\n" +
+        "\uD83D\uDCCC jpeg " +  "\n\n" +
+        "\uD83D\uDCCC png " +  "\n\n" +
+        "\uD83D\uDCCC pdf " )
 public class FileController {
     private final FileService fileService;
     private final JpaFileRepository jpaFileRepository;
 
     @CrossOrigin
+    @Operation(summary = "파일 상세 조회", description = "성공하면 File 데이터베이스에 저장되어있는 파일 출력")
     @GetMapping(
             value = "/file/{id}",
             produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.APPLICATION_PDF_VALUE}
