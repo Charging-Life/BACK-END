@@ -1,4 +1,4 @@
-package com.example.charging_life.station.entity;
+package com.example.charging_life.api;
 
 import lombok.Builder;
 import lombok.Getter;

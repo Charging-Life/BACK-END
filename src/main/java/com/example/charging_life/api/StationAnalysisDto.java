@@ -1,12 +1,6 @@
-package com.example.charging_life.station.dto;
+package com.example.charging_life.api;
 
-import com.example.charging_life.station.entity.StationAnalysis;
 import lombok.Getter;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 @Getter
 public class StationAnalysisDto {

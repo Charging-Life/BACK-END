@@ -1,6 +1,6 @@
-package com.example.charging_life.station.repository;
+package com.example.charging_life.api;
 
-import com.example.charging_life.station.entity.StationAnalysis;
+import com.example.charging_life.api.StationAnalysis;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
