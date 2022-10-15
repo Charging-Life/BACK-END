@@ -1,5 +1,7 @@
 package com.example.charging_life.station.entity;
 
+import com.example.charging_life.board.entity.Board;
+import com.example.charging_life.car.Car;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,12 +35,14 @@ public class ChargingStation {
     private String limitDetail;
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "zcode_id") @JsonIgnore
     private Zcode zcode;
+    @OneToMany(mappedBy = "chargingStation")
+    private List<Board> boards = new ArrayList<>();
 
     @Builder
     public ChargingStation(String statNm, List<Charger> charger, String statId,
                            String address, String location, Double lat, Double lng,
                            String useTime, Business business, Integer parkingFree, String note,
-                           Integer limitYn, String limitDetail, Zcode zcode) {
+                           Integer limitYn, String limitDetail, Zcode zcode, List<Board> boards) {
         this.statNm = statNm;
         this.charger = charger;
         this.statId = statId;
@@ -55,5 +59,11 @@ public class ChargingStation {
         this.limitDetail = limitDetail;
         this.zcode = zcode;
         zcode.addChargingStation(this);
+        this.boards = boards;
+    }
+
+    public void addStation(Board board) {
+        this.boards.add(board);
+
     }
 }

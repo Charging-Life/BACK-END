@@ -72,7 +72,7 @@ public class ChargingStationDto {
         private Long nowTsdt;
 
         public ChargerDto(Charger charger) {
-            this.chargerId = charger.getChargerId();;
+            this.chargerId = charger.getChargerId();
             this.chargerType = charger.getChargerType();
             this.outPut = charger.getOutput();
             this.stat = charger.getStat();
