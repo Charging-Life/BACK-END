@@ -1,6 +1,6 @@
 package com.example.charging_life.alarm;
 
-import com.example.charging_life.station.entity.ChargingStation;
+import com.example.charging_life.station.entity.Charger;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,17 +12,19 @@ import javax.persistence.*;
 public class Alarm {
     @Id @GeneratedValue
     private Long id;
-    @OneToOne(fetch = FetchType.LAZY) @JoinColumn(name = "charging_station_id")
-    private ChargingStation chargingStation;
-    private String status;
-    private String statusImg;
+    @OneToOne(fetch = FetchType.LAZY) @JoinColumn(name = "charger_id")
+    private Charger charger;
+    private Status status;
+    private ChargerStatus chargerStatus;
 
-    public Alarm(ChargingStation chargingStation) {
-        this.chargingStation = chargingStation;
-        this.status = "none";
+    public Alarm(Charger charger) {
+        this.charger = charger;
+        this.status = Status.UNREAD;
+        this.chargerStatus = ChargerStatus.NONE;
     }
 
-    public void updateStatus(String status){
-        this.status = status;
+    public void updateStatus(ChargerStatus chargerStatus) {
+        this.chargerStatus = chargerStatus;
+        this.status = Status.UNREAD;
     }
 }
