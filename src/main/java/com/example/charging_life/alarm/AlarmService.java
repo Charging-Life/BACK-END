@@ -2,6 +2,8 @@ package com.example.charging_life.alarm;
 
 import com.example.charging_life.alarm.dto.AlarmResDto;
 import com.example.charging_life.alarm.dto.StationStat;
+import com.example.charging_life.exception.CustomException;
+import com.example.charging_life.exception.ExceptionEnum;
 import com.example.charging_life.member.repo.JpaMemberStationRepo;
 import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.member.entity.MemberChargingStation;
@@ -50,5 +52,12 @@ public class AlarmService {
             }
         }
         return alarmResDtos;
+    }
+
+    @Transactional
+    public void readAlarm(Long alarmId) {
+        Alarm alarm = jpaAlarmRepository.findById(alarmId)
+                .orElseThrow(()->new CustomException(ExceptionEnum.AlarmDoesNotEnroll));
+        alarm.read();
     }
 }

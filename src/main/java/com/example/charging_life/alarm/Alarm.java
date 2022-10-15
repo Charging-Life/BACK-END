@@ -27,4 +27,8 @@ public class Alarm {
         this.chargerStatus = chargerStatus;
         this.status = Status.UNREAD;
     }
+
+    public void read() {
+        this.status = Status.READ;
+    }
 }
