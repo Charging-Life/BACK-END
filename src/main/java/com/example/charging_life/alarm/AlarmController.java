@@ -29,7 +29,7 @@ public class AlarmController {
 
     @PostMapping("/alarm")
     public Long save(@RequestBody EnrollAlarmReqDto enrollAlarmReqDto) {
-        return alarmService.enrollAlarm(enrollAlarmReqDto.getStatId());
+        return alarmService.enrollAlarm(enrollAlarmReqDto.getChargerId());
     }
 
     @GetMapping("/alarm")

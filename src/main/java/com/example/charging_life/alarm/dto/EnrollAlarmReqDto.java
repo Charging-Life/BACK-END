@@ -6,5 +6,5 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class EnrollAlarmReqDto {
-    private String statId;
+    private Integer chargerId;
 }
