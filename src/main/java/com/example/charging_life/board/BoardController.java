@@ -71,10 +71,10 @@ public class BoardController {
             "Content-Type: application/pdf"  + "\n\n"+
             "파일 첨부"+ "\n\n")
     @PostMapping("/board")
-    public BoardResDto create(@RequestPart(value = "boardReqDto") BoardReqDto boardReqDto,
+    public ResponseEntity<BoardResDto> create(@RequestPart(value = "boardReqDto") BoardReqDto boardReqDto,
                               @RequestPart(value = "file", required = false) List<MultipartFile> files
     ) throws Exception {
-        return boardService.create(boardReqDto, files);
+        return ResponseEntity.ok(boardService.create(boardReqDto, files));
     }
 
     @Operation(summary = "게시글 리스트", description = "성공하면 Board 데이터베이스에 저장되어있는 모든 게시글 출력")
@@ -105,8 +105,8 @@ public class BoardController {
             "  \"description\" : \"description1\",\n" + "\n\n"+
             "}\n"+ "\n\n")
     @PatchMapping("/board/{id}")
-    public BoardUpdateResDto updateBoard(@PathVariable Long id, @RequestBody BoardUpdateReqDto boardUpdateReqDto) {
-        return boardService.update(id, boardUpdateReqDto);
+    public ResponseEntity<BoardUpdateResDto> updateBoard(@PathVariable Long id, @RequestBody BoardUpdateReqDto boardUpdateReqDto) {
+        return ResponseEntity.ok(boardService.update(id, boardUpdateReqDto));
     }
 
     @Operation(summary = "게시글 삭제", description = "성공하면 Board 데이터베이스에 저장되어있는 id 값의 게시글 삭제")
@@ -125,8 +125,8 @@ public class BoardController {
     @Operation(summary = "게시글 좋아요 등록 및 취소", description = "해당 게시글을 좋아요 누른 적이 없으면 해당 게시글에 좋아요 등록 및 좋아요 수 Up &"+ "\n\n" +
             " 해당 게시글을 좋아요 누른 적이 있으면 해당 게시글에 좋아요 취소 및 좋아요 수 Down")
     @PostMapping("/board/{id}/like")
-    public BoardLikeResDto likeBoard(@PathVariable Long id, @RequestBody BoardLikeReqDto boardLikeReqDto) {
-        return boardService.like(id, boardLikeReqDto);
+    public ResponseEntity<BoardLikeResDto> likeBoard(@PathVariable Long id, @RequestBody BoardLikeReqDto boardLikeReqDto) {
+        return ResponseEntity.ok(boardService.like(id, boardLikeReqDto));
     }
 
 }

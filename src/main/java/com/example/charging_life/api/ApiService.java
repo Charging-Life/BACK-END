@@ -10,6 +10,7 @@ import com.example.charging_life.station.repository.JpaChargerRepository;
 import com.example.charging_life.station.repository.JpaStationRepository;
 import com.example.charging_life.station.repository.JpaZcodeRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -27,7 +28,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Transactional(readOnly = false)
-@Service
+@Service @Slf4j
 @RequiredArgsConstructor
 public class ApiService {
 
@@ -197,7 +198,7 @@ public class ApiService {
     }
 
     // If we have to update the data, then can start at last point which is the end of the previous data
-    public Integer page(Boolean isnew) {
+    public Integer paginate(Boolean isnew) {
         if (isnew) {
             Integer start = findStationAnalysis();
             return ((start/1000)+1);
@@ -211,12 +212,20 @@ public class ApiService {
     @Transactional
     public void saveChargingStationData(Boolean isBusiness, Boolean isnew) throws IOException, ParseException {
         // count the page
-        int i = page(isnew);
+        int i = paginate(isnew);
         // To break this function on the last page
         boolean flag = true;
 
         while (flag){
             long startTime = System.currentTimeMillis(); // start time
+            if (isBusiness) {
+                if (isnew) {log.info("updateBusinessData : " + i + " page start at " + startTime);}
+                else {log.info("saveBusinessData : " + i + " page start at " + startTime);}
+            }
+            else {
+            if (isnew) {log.info("updateChargingStationData : " + i + " page start at " + startTime);}
+            else {log.info("saveChargingStationData : " + i + " page start at " + startTime);}
+            }
             //used to create a mutable
             StringBuilder result = new StringBuilder();
 
@@ -270,10 +279,24 @@ public class ApiService {
                 else saveChargingStation(jsonObject); //save the data to charging station & charger
 
             }
-            System.out.println("success: " + i);
             long endTime = System.currentTimeMillis(); // end time
+            if (isBusiness) {
+                if (isnew) {log.info("updateBusinessData success : " + i + " page end at " + endTime);}
+                else {log.info("saveBusinessData success : " + i + " page end at " + endTime);}
+            }
+            else {
+                if (isnew) {log.info("updateChargingStationData success : " + i + " page end at " + endTime);}
+                else {log.info("saveChargingStationData success: " + i + " page end at " + endTime);}
+            }
             long secDiffTime = (endTime - startTime)/1000; // total time
-            System.out.println("The time of " + i +" page : "+secDiffTime + " (μs)");
+            if (isBusiness) {
+                if (isnew) {log.info("updateBusinessData Total Time : " + "The time of " + i +" page : "+secDiffTime + " (μs)");}
+                else {log.info("saveBusinessData Total Time : " + "The time of " + i +" page : "+secDiffTime + " (μs)");}
+            }
+            else {
+                if (isnew) {log.info("updateChargingStationData Total Time : " + "The time of " + i +" page : "+secDiffTime + " (μs)");}
+                else {log.info("saveChargingStationData Total Time: " + "The time of " + i +" page : "+secDiffTime + " (μs)");}
+            }
             if (i < ((countStatation / 1000)+1)) {
                 i++; // if there is still a page left, increase it
             } else {
@@ -289,6 +312,8 @@ public class ApiService {
         boolean flag = true;
 
         while (flag) {
+            long startTime = System.currentTimeMillis(); // start time
+            log.info("updateChargerStatusData : " + i + " page start at " + startTime);
             //used to create a mutable
             StringBuilder result = new StringBuilder();
 
@@ -361,7 +386,10 @@ public class ApiService {
                     }
                 }
             }
-            System.out.println("success: " + 1);
+            long endTime = System.currentTimeMillis(); // end time
+            log.info("updateChargerStatusData success: " + i + " page end at " + endTime);
+            long secDiffTime = (endTime - startTime)/1000; // total time
+            log.info("updateChargerStatusData Total Time: " + "The time of " + i +" page : "+secDiffTime + " (μs)");
 
             if (i < ((countCharger / 1000) + 1)) {
                 i++; // if there is still a page left, increase it
