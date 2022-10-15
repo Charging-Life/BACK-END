@@ -15,7 +15,7 @@ logging:
         coyote:
           http11: debug
 upload:
-  path: /Users/kathylee/Desktop
+  path: /
 
 springdoc:
   version: '@project.version@'

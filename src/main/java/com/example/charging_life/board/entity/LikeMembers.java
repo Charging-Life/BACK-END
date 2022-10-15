@@ -32,8 +32,6 @@ public class LikeMembers {
     @Builder
     public LikeMembers(Member member, Board board) {
         this.member = member;
-        member.addLike(this);
         this.board = board;
-        board.addLikes(this);
     }
 }

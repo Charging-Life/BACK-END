@@ -75,7 +75,6 @@ public class Board {
         this.title = title;
         this.description = description;
         this.member = member;
-        member.addBoard(this);
         this.files = files;
         this.category = category;
         this.chargingStation = chargingStation;

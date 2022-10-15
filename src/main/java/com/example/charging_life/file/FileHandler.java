@@ -38,7 +38,7 @@ public class FileHandler {
             String absolutePath = new java.io.File("").getAbsolutePath() + java.io.File.separator + java.io.File.separator;
 
 
-            String path = "images" + java.io.File.separator + current_date;
+            String path = "file" + java.io.File.separator + current_date;
             java.io.File file = new java.io.File(path);
 
 
