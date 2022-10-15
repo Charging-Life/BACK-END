@@ -1,4 +1,4 @@
-package com.example.charging_life.alarm;
+package com.example.charging_life.alarm.entity;
 
 import com.example.charging_life.station.entity.ChargingStation;
 import lombok.Getter;
