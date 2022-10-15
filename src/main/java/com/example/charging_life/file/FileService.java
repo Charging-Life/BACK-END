@@ -1,5 +1,7 @@
 package com.example.charging_life.file;
 
+import com.example.charging_life.exception.CustomException;
+import com.example.charging_life.exception.ExceptionEnum;
 import com.example.charging_life.file.dto.FileDto;
 import com.example.charging_life.file.dto.FileResDto;
 import com.example.charging_life.file.entity.File;
@@ -22,7 +24,7 @@ public class FileService {
     public FileDto findByFileId(Long id) {
 
         com.example.charging_life.file.entity.File entity = fileRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당파일이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ExceptionEnum.FileIsNotExisted));
 
         FileDto fileDto = FileDto.builder()
                 .fileName(entity.getFileName())

@@ -3,6 +3,8 @@ package com.example.charging_life.board;
 import com.example.charging_life.board.dto.*;
 import com.example.charging_life.board.entity.Board;
 import com.example.charging_life.board.entity.Category;
+import com.example.charging_life.exception.CustomException;
+import com.example.charging_life.exception.ExceptionEnum;
 import com.example.charging_life.file.FileHandler;
 import com.example.charging_life.file.FileService;
 import com.example.charging_life.board.entity.LikeMembers;
@@ -59,7 +61,8 @@ public class BoardService {
 
     @Transactional
     public BoardResDto create(BoardReqDto boardReqDto, List<MultipartFile> files) throws Exception {
-        Member member = jpaMemberRepo.getReferenceById(boardReqDto.getMember().getId());
+        Member member = jpaMemberRepo.findById(boardReqDto.getMemberId())
+                .orElseThrow(() -> new CustomException(ExceptionEnum.MemberIsNotExisted)) ;
         Long id = getStation(member, boardReqDto);
         List<File> fileList = fileHandler.parseFileInfo(files);
         Board board = jpaBoardRepository.getReferenceById(id);
@@ -75,7 +78,7 @@ public class BoardService {
     @Transactional
     public BoardUpdateResDto update(Long id, BoardUpdateReqDto boardUpdateReqDto) {
         jpaBoardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ExceptionEnum.PageIsNotExisted));
         String updateTitle = boardUpdateReqDto.getTitle();
         String updateDescription = boardUpdateReqDto.getDescription();
         String updateDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy.MM.dd HH:mm"));
@@ -90,7 +93,7 @@ public class BoardService {
     @Transactional
     public void delete(Long id) {
         Board board = jpaBoardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ExceptionEnum.PageIsNotExisted));
         jpaBoardRepository.delete(board);
     }
 
@@ -102,7 +105,7 @@ public class BoardService {
     @Transactional
     public BoardResDto findboardByBoardId(Long id, List<Long> fileId) {
         Board board = jpaBoardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ExceptionEnum.PageIsNotExisted));
         int visit = board.getVisit();
         int visitUp = (visit + 1);
         jpaBoardRepository.updateVisit(visitUp, id);
@@ -119,7 +122,7 @@ public class BoardService {
     @Transactional
     public BoardLikeResDto like(Long id, BoardLikeReqDto boardLikeReqDto) {
         jpaBoardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ExceptionEnum.PageIsNotExisted));
         Member member = boardLikeReqDto.getMember();
         Board board = boardLikeReqDto.getBoard();
         LikeMembers likeMembers = jpaLikeMembersRepository.findByBoard_idAndMember_id(id, member.getId());
