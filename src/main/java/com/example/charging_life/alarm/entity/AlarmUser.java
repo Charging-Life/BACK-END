@@ -1,7 +1,9 @@
 package com.example.charging_life.alarm.entity;
 
+import com.example.charging_life.board.entity.Category;
 import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.station.entity.ChargingStation;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -13,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Notice {
+public class AlarmUser {
 
     @Id @GeneratedValue
     private Long id;
@@ -24,15 +26,18 @@ public class Notice {
     @OneToOne(fetch = FetchType.LAZY) @JoinColumn(name = "charging_station_id")
     private ChargingStation chargingStation;
 
-    private String chargerStatus;
+    @Enumerated(value = EnumType.STRING)
+    private ChargerStatus chargerStatus;
 
-    @CreatedDate
     private String startCharging;
 
-    public Notice(Member member, ChargingStation chargingStation, String chargerStatus) {
+    @Builder
+    public AlarmUser(Member member, ChargingStation chargingStation, ChargerStatus chargerStatus, String startCharging) {
         this.member = member;
         this.chargingStation = chargingStation;
         this.chargerStatus = chargerStatus;
         this.startCharging = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy.MM.dd HH:mm"));
     }
+
+
 }
