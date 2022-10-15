@@ -24,7 +24,7 @@ public class FileService {
     public FileDto findByFileId(Long id) {
 
         com.example.charging_life.file.entity.File entity = fileRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ExceptionEnum.FileIsNotExisted));
+                .orElseThrow(() -> new CustomException(ExceptionEnum.FileDoesNotExist));
 
         FileDto fileDto = FileDto.builder()
                 .fileName(entity.getFileName())
