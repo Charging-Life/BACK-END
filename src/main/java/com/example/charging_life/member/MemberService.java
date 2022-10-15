@@ -86,4 +86,11 @@ public class MemberService implements UserDetailsService {
         ChargingStation station = jpaStationRepository.findByStatId(statId);
         return jpaMemberStationRepo.existsByMemberAndChargingStation(member, station);
     }
+
+    @Transactional
+    public void deleteStation(Member member, Long statId) {
+        ChargingStation station = jpaStationRepository.findById(statId)
+                .orElseThrow(() -> new CustomException(ExceptionEnum.StationDoesNotExist));
+        jpaMemberStationRepo.deleteByMemberAndChargingStation(member,station);
+    }
 }

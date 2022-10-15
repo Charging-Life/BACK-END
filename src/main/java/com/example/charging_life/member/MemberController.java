@@ -79,6 +79,15 @@ public class MemberController {
         memberService.enrollStation(member, stationReqDto);
     }
 
+    @Operation(summary = "관리할 충전소 삭제 또는 충전소 즐겨찾기 삭제")
+    @DeleteMapping("/member/{statId}")
+    public void deleteStation(
+            @RequestHeader(name = "Authorization") String accessToken,
+            @PathVariable Long statId) {
+        Member member = findMemberByToken(accessToken);
+        memberService.deleteStation(member, statId);
+    }
+
     @Operation(summary = "충전소 즐겨찾기 여부 조회")
     @GetMapping("member/station/{statId}")
     public ResponseEntity<Boolean> checkFavorite(
