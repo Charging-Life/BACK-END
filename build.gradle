@@ -34,6 +34,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'mysql:mysql-connector-java'
 	implementation 'commons-io:commons-io:2.6'
+	implementation 'com.google.zxing:core:3.5.0'
+	implementation 'com.google.zxing:javase:3.5.0'
 
 	//https://hhseong.tistory.com/173
 	implementation 'org.springframework.boot:spring-boot-starter-security'

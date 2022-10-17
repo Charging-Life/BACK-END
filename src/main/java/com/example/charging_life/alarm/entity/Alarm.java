@@ -1,5 +1,7 @@
-package com.example.charging_life.alarm;
+package com.example.charging_life.alarm.entity;
 
+import com.example.charging_life.alarm.Status;
+import com.example.charging_life.alarm.ChargerStatus;
 import com.example.charging_life.station.entity.Charger;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

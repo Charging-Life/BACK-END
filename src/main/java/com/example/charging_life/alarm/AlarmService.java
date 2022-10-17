@@ -2,6 +2,8 @@ package com.example.charging_life.alarm;
 
 import com.example.charging_life.alarm.dto.AlarmResDto;
 import com.example.charging_life.alarm.dto.StationStat;
+import com.example.charging_life.alarm.entity.Alarm;
+import com.example.charging_life.alarm.repository.JpaAlarmRepository;
 import com.example.charging_life.exception.CustomException;
 import com.example.charging_life.exception.ExceptionEnum;
 import com.example.charging_life.member.repo.JpaMemberStationRepo;

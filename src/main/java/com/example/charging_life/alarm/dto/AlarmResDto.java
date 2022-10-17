@@ -1,8 +1,8 @@
 package com.example.charging_life.alarm.dto;
 
-import com.example.charging_life.alarm.Alarm;
 import com.example.charging_life.alarm.ChargerStatus;
 import com.example.charging_life.alarm.Status;
+import com.example.charging_life.alarm.entity.Alarm;
 import lombok.Getter;
 
 @Getter
