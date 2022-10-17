@@ -19,9 +19,9 @@ public enum ExceptionEnum {
     PageDoesNotExist(HttpStatus.NOT_FOUND, 3001, "해당 게시물이 존재하지 않습니다."),
     FileDoesNotExist(HttpStatus.NOT_FOUND, 3002, "해당 파일이 존재하지 않습니다."),
     StationDoesNotExist(HttpStatus.NOT_FOUND, 3003, "헤당 충전소가 존재하지 않습니다."),
-    AlarmDoesNotEnroll(HttpStatus.NOT_FOUND,3004,"충전기 알림이 등록되지 않았습니다.");
-
-
+    AlarmDoesNotEnroll(HttpStatus.NOT_FOUND,3004,"충전기 알림이 등록되지 않았습니다."),
+    StationDoesNotExist(HttpStatus.NOT_FOUND, 3006, "해당 충전소가 존재하지 않습니다.");
+    }
 
 
     private HttpStatus status;
