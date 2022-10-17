@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Notice {
+public class AlarmUser {
 
     @Id @GeneratedValue
     private Long id;
@@ -29,7 +29,7 @@ public class Notice {
     @CreatedDate
     private String startCharging;
 
-    public Notice(Member member, ChargingStation chargingStation, String chargerStatus) {
+    public AlarmUser(Member member, ChargingStation chargingStation, String chargerStatus) {
         this.member = member;
         this.chargingStation = chargingStation;
         this.chargerStatus = chargerStatus;

@@ -1,2 +1,4 @@
-package com.example.charging_life.alarm.entity;public enum ChargerStatus {
+package com.example.charging_life.alarm.entity;
+
+public enum ChargerStatus {
 }
