@@ -68,8 +68,9 @@ public class AlarmService {
         System.out.println(alarmUserReqDto.getMemberId());
         Member member = jpaMemberRepo.findById(alarmUserReqDto.getMemberId())
                 .orElseThrow(() -> new CustomException(ExceptionEnum.MemberDoesNotExist));
-        ChargingStation chargingStation = jpaStationRepository.findByStatId(alarmUserReqDto.getStationId());
-        System.out.println(alarmUserReqDto.getChargerStatus());
+        ChargingStation chargingStation = Optional.ofNullable(
+                jpaStationRepository.findByStatId(alarmUserReqDto.getStationId()))
+                .orElseThrow(() -> new CustomException(ExceptionEnum.StationDoesNotExist));
         ChargerStatus chargerStatus = alarmUserReqDto.getChargerStatus();
         AlarmUser alarmUser =  AlarmUser.builder()
                 .member(member)

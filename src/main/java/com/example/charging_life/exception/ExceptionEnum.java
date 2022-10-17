@@ -17,7 +17,8 @@ public enum ExceptionEnum {
 
     MemberDoesNotExist(HttpStatus.NOT_FOUND, 3000, "등록되지 않은 회원입니다."),
     PageDoesNotExist(HttpStatus.NOT_FOUND, 3001, "해당 게시물이 존재하지 않습니다."),
-    FileDoesNotExist(HttpStatus.NOT_FOUND, 3002, "해당 파일이 존재하지 않습니다."),;
+    FileDoesNotExist(HttpStatus.NOT_FOUND, 3002, "해당 파일이 존재하지 않습니다."),
+    StationDoesNotExist(HttpStatus.NOT_FOUND, 3006, "해당 충전소가 존재하지 않습니다.");
 
 
 
