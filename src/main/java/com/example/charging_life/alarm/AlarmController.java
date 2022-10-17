@@ -39,4 +39,9 @@ public class AlarmController {
         Member member = memberService.findMemberByEmail(email);
         return ResponseEntity.ok(alarmService.getStationStat(member));
     }
+
+    @PatchMapping("/alarm/{id}")
+    public void updateAlarm(@PathVariable Long alarmId) {
+        alarmService.readAlarm(alarmId);
+    }
 }
