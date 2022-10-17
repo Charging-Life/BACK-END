@@ -22,7 +22,7 @@ public class AlarmUser {
 
     @OneToOne(fetch = FetchType.LAZY) @JoinColumn(name = "member_id")
     private Member member;
-
+    
     @OneToOne(fetch = FetchType.LAZY) @JoinColumn(name = "charging_station_id")
     private ChargingStation chargingStation;
 
@@ -38,6 +38,4 @@ public class AlarmUser {
         this.chargerStatus = chargerStatus;
         this.startCharging = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy.MM.dd HH:mm"));
     }
-
-
 }

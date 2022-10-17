@@ -15,8 +15,9 @@ import com.example.charging_life.member.repo.JpaMemberRepo;
 import com.example.charging_life.member.repo.JpaMemberStationRepo;
 import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.member.entity.MemberChargingStation;
+import com.example.charging_life.station.entity.Charger;
 import com.example.charging_life.station.entity.ChargingStation;
-import com.example.charging_life.station.repository.JpaStationRepository;
+import com.example.charging_life.station.repository.JpaChargerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,7 @@ public class AlarmService {
     private final JpaAlarmRepository jpaAlarmRepository;
     private final JpaAlarmUserRepository jpaAlarmUserRepository;
     private final JpaStationRepository jpaStationRepository;
+    private final JpaChargerRepository jpaChargerRepository;
     private final JpaMemberStationRepo jpaMemberStationRepo;
     private final JpaMemberRepo jpaMemberRepo;
 
@@ -44,9 +46,9 @@ public class AlarmService {
     }
 
     @Transactional
-    public Long enrollAlarm(String statId) {
-        ChargingStation chargingStation = jpaStationRepository.findByStatId(statId);
-        Alarm alarm = jpaAlarmRepository.save(new Alarm(chargingStation));
+    public Long enrollAlarm(Integer chargerId) {
+        Charger charger = jpaChargerRepository.findByChargerId(chargerId);
+        Alarm alarm = jpaAlarmRepository.save(new Alarm(charger));
         return alarm.getId();
     }
 
@@ -56,11 +58,19 @@ public class AlarmService {
         List<AlarmResDto> alarmResDtos = new ArrayList<>();
         for (MemberChargingStation station : stations) {
             ChargingStation chargingStation = station.getChargingStation();
-            Optional<Alarm> alarm = jpaAlarmRepository.findByChargingStationOrderByIdDesc(chargingStation)
-                    .stream().findFirst();
-            if(alarm.isPresent()) alarmResDtos.add(new AlarmResDto(alarm.get().getStatus(),chargingStation));
+            List<Charger> chargers = chargingStation.getCharger();
+            for(Charger charger : chargers) {
+                Optional<Alarm> alarm = jpaAlarmRepository.findByCharger(charger);
+                if(alarm.isPresent()) alarmResDtos.add(new AlarmResDto(alarm.get()));
+            }
         }
         return alarmResDtos;
+    }
+    
+    public void readAlarm(Long alarmId) {
+        Alarm alarm = jpaAlarmRepository.findById(alarmId)
+                .orElseThrow(()->new CustomException(ExceptionEnum.AlarmDoesNotEnroll));
+        alarm.read();
     }
 
     @Transactional
@@ -80,5 +90,6 @@ public class AlarmService {
         AlarmUser alarmUserInfo = jpaAlarmUserRepository.save(alarmUser);
         AlarmUserResDto alarmUserResDto = new AlarmUserResDto(alarmUserInfo);
         return alarmUserResDto;
-    }
+        }
+
 }
