@@ -18,6 +18,7 @@ import com.example.charging_life.member.entity.MemberChargingStation;
 import com.example.charging_life.station.entity.Charger;
 import com.example.charging_life.station.entity.ChargingStation;
 import com.example.charging_life.station.repository.JpaChargerRepository;
+import com.example.charging_life.station.repository.JpaStationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
