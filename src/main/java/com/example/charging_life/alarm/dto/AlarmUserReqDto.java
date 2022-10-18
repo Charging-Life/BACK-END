@@ -16,4 +16,9 @@ public class AlarmUserReqDto {
     private String stationId;
     private ChargerStatus chargerStatus;
 
+    public AlarmUserReqDto(Long memberId, String stationId, String chargerStatus) {
+        this.memberId = memberId;
+        this.stationId = stationId;
+        this.chargerStatus = chargerStatus;
+    }
 }

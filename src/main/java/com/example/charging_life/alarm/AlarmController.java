@@ -35,7 +35,7 @@ public class AlarmController {
 
     @PostMapping("/alarm")
     public Long save(@RequestBody EnrollAlarmReqDto enrollAlarmReqDto) {
-        return alarmService.enrollAlarm(enrollAlarmReqDto.getStatId());
+        return alarmService.enrollAlarm(enrollAlarmReqDto.getChargerId());
     }
 
     @GetMapping("/alarm")
@@ -44,6 +44,11 @@ public class AlarmController {
         String email = tokenService.getEmailFromToken(accessToken);
         Member member = memberService.findMemberByEmail(email);
         return ResponseEntity.ok(alarmService.getStationStat(member));
+    }
+
+    @PatchMapping("/alarm/{id}")
+    public void updateAlarm(@PathVariable Long alarmId) {
+        alarmService.readAlarm(alarmId);
     }
 
     @GetMapping("/qr")
@@ -66,8 +71,4 @@ public class AlarmController {
         }
     }
 
-    @PostMapping("/alarm/user")
-    public ResponseEntity<AlarmUserResDto> createNotice(@RequestBody AlarmUserReqDto alarmUserReqDto) {
-        return ResponseEntity.ok(alarmService.createUserAlarm(alarmUserReqDto));
-    }
 }
