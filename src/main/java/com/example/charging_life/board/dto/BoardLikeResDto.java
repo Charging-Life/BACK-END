@@ -19,7 +19,7 @@ public class BoardLikeResDto {
     private String description;
     private WriterUpdateDto member;
     private Category category;
-    private List<MemberLikeDto> likeMember = new ArrayList<>();
+    private List<Long> likeMember = new ArrayList<>();
     private Integer likes;
     private String creationDateTime;
     private String updateDateTime;
@@ -32,7 +32,7 @@ public class BoardLikeResDto {
         this.category = board.getCategory();
         List<LikeMembers> likeMember = board.getLikeMembers();
         for (LikeMembers likeMembers : likeMember) {
-            this.likeMember.add(new MemberLikeDto(likeMembers.getMember()));
+            this.likeMember.add(likeMembers.getMember().getId());
         }
         this.likes = board.getLikes();
         this.creationDateTime = board.getCreationDateTime();
@@ -51,14 +51,6 @@ public class BoardLikeResDto {
             this.email = member.getEmail();
             this.name = member.getName();
             this.auth = member.getAuth();
-        }
-    }
-    @Getter
-    private class MemberLikeDto {
-        private Long id;
-
-        public MemberLikeDto(Member member) {
-            this.id = member.getId();
         }
     }
 }

@@ -61,6 +61,11 @@ public class Board {
     @ColumnDefault("0")
     private int visit;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OrderBy("id asc")
+    private List<Comment> comments;
+
     @Column(name = "creation_date_time") @CreatedDate
     private String creationDateTime;
 
@@ -71,7 +76,7 @@ public class Board {
     @Builder
     public Board(String title, String description, Member member, List<File> files,
                  Category category, ChargingStation chargingStation, List<LikeMembers> likeMembers,
-                 Integer likes, Integer visit, String creationDateTime, String updateDateTime) {
+                 Integer likes, Integer visit, List<Comment> comments, String creationDateTime, String updateDateTime) {
         this.title = title;
         this.description = description;
         this.member = member;
@@ -83,6 +88,7 @@ public class Board {
         this.likeMembers = likeMembers;
         this.likes = likes;
         this.visit = 0;
+        this.comments = comments;
         this.creationDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy.MM.dd HH:mm"));
         this.updateDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy.MM.dd HH:mm"));
     }
