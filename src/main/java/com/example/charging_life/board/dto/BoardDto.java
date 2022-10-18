@@ -11,7 +11,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class BoardListDto {
+public class BoardDto {
     private Long id;
     private String title;
     private String description;
@@ -22,7 +22,7 @@ public class BoardListDto {
     private List<Long> fileId;
     private String creationDateTime;
 
-    public BoardListDto(Board board, List<Long> fileId) {
+    public BoardDto(Board board) {
         this.id = board.getId();
         this.title = board.getTitle();
         this.description = board.getDescription();
@@ -30,7 +30,6 @@ public class BoardListDto {
         this.category = board.getCategory();
         this.likes = board.getLikes();
         this.visit = board.getVisit();
-        this.fileId = fileId;
         this.creationDateTime = board.getCreationDateTime();
     }
 

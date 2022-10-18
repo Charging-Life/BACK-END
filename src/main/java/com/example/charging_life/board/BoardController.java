@@ -3,6 +3,7 @@ package com.example.charging_life.board;
 import com.example.charging_life.board.dto.*;
 import com.example.charging_life.board.entity.Board;
 import com.example.charging_life.board.entity.Category;
+import com.example.charging_life.board.entity.Like;
 import com.example.charging_life.file.FileService;
 import com.example.charging_life.file.dto.FileResDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,18 +33,25 @@ public class BoardController {
     private final FileService fileService;
 
     @Operation(summary = "게시판 글 작성", description = "성공하면 게시글이 Board 데이터베이스에 저장" + "\n\n"+
+            "‼️form-data로 POST 내용은 boardReqDto로 묶어서 한번에 보내야함‼️"+ "\n\n"+
             "✅ category가 \"FREE\" or \"Notice\"일 때"  + "\n\n"+
+            "\uD83D\uDCCC 내용" + "\n\n"+
+            "Content-Disposition: form-data; name=\"boardReqDto\""  + "\n\n"+
+            "Content-Type: application/json"  + "\n\n"+
             "{\n" + "\n\n"+
             "  \"title\" : \"title1\",\n" + "\n\n"+
             "  \"description\" : \"description1\",\n" + "\n\n"+
-            "  \"member\" : {\"id\" : 1},\n" + "\n\n"+
+            "  \"memberId\" : 1,\n" + "\n\n"+
             "  \"category\" : \"FREE\"\n" + "\n\n"+
             "}\n"+ "\n\n"+
             "✅ category가 \"Station\"일 때"  + "\n\n"+
+            "\uD83D\uDCCC 내용" + "\n\n"+
+            "Content-Disposition: form-data; name=\"boardReqDto\""  + "\n\n"+
+            "Content-Type: application/json"  + "\n\n"+
             "{\n" + "\n\n"+
             "  \"title\" : \"title1\",\n" + "\n\n"+
             "  \"description\" : \"description1\",\n" + "\n\n"+
-            "  \"member\" : {\"id\" : 1},\n" + "\n\n"+
+            "  \"memberId\" : 1,\n" + "\n\n"+
             "  \"statId\" : \"ME000006\",\n"+"\n\n"+
             "  \"category\" : \"FREE\"\n" + "\n\n"+
             "}\n"+ "\n\n"+
@@ -54,7 +62,7 @@ public class BoardController {
             "{\n" + "\n\n"+
             "  \"title\" : \"title1\",\n" + "\n\n"+
             "  \"description\" : \"description1\",\n" + "\n\n"+
-            "  \"member\" : {\"id\" : 1},\n" + "\n\n"+
+            "  \"memberId\" : 1,\n" + "\n\n"+
             "  \"statId\" : \"ME000006\",\n"+"\n\n"+
             "  \"category\" : \"FREE\"\n" + "\n\n"+
             "}\n"+ "\n\n"+
@@ -79,7 +87,7 @@ public class BoardController {
 
     @Operation(summary = "게시글 리스트", description = "성공하면 Board 데이터베이스에 저장되어있는 모든 게시글 출력")
     @GetMapping("/board/list")
-    public ResponseEntity<List<Board>> getBoardList() throws IOException {
+    public ResponseEntity<List<BoardDto>> getBoardList() throws IOException {
         return ResponseEntity.ok(boardService.findList());
     }
 
@@ -125,8 +133,57 @@ public class BoardController {
     @Operation(summary = "게시글 좋아요 등록 및 취소", description = "해당 게시글을 좋아요 누른 적이 없으면 해당 게시글에 좋아요 등록 및 좋아요 수 Up &"+ "\n\n" +
             " 해당 게시글을 좋아요 누른 적이 있으면 해당 게시글에 좋아요 취소 및 좋아요 수 Down")
     @PostMapping("/board/{id}/like")
-    public ResponseEntity<BoardLikeResDto> likeBoard(@PathVariable Long id, @RequestBody BoardLikeReqDto boardLikeReqDto) {
-        return ResponseEntity.ok(boardService.like(id, boardLikeReqDto));
+    public ResponseEntity<BoardLikeResDto> likeBoard(@PathVariable Long id,
+                                                     @RequestParam(name = "memberId") Long memberId,
+                                                     @RequestParam(name = "like") Like like) {
+        return ResponseEntity.ok(boardService.like(id, memberId, like));
     }
 
+    @Operation(summary = "댓글 작성", description = "성공하면 해당 boardId에 댓글이 해당 Comment 데이터베이스에 저장" + "\n\n"+
+            "\uD83D\uDCCC 내용" + "\n\n"+
+            "{\n" + "\n\n"+
+            "  \"comment\" : \"comment1\",\n" + "\n\n"+
+            "  \"writer\" : 1,\n" + "\n\n"+
+            "}\n"+ "\n\n")
+    @PostMapping("/board/{board_id}/comment")
+    public ResponseEntity<CommentResDto> createComment(@RequestPart(value = "commentReqDto") CommentReqDto commentReqDto,
+                                                     @PathVariable(value = "board_id") Long id) throws Exception {
+        return ResponseEntity.ok(boardService.createComment(commentReqDto, id));
+    }
+
+    @Operation(summary = "댓글 리스트", description = "성공하면 해당 boardId의 Comment 데이터베이스에 저장되어있는 모든 댓글 출력")
+    @GetMapping("/board/{board_id}/comment")
+    public ResponseEntity<List<CommentResDto>> getCommentList(@PathVariable(value = "board_id") Long id) throws IOException {
+        return ResponseEntity.ok(boardService.findCommentList(id));
+    }
+
+    @Operation(summary = "댓글 상세조회", description = "성공하면 Comment 데이터베이스에 저장되어있는 id 값의 댓글 출력")
+    @GetMapping("/board/{board_id}/comment/{comment_id}")
+    public ResponseEntity<CommentResDto> getComment(@PathVariable(value = "comment_id") Long id) throws IOException {
+        return ResponseEntity.ok(boardService.findComment(id));
+    }
+
+    @Operation(summary = "댓글 수정", description = "성공하면 comment가 수정됨" + "\n\n" +
+            "⭐️comment 부분 수정 가능⭐️"+ "\n\n" +
+            "http://115.85.181.24:8084/board/{board_id}/comment/{comment_id}?comment=comment2")
+    @PatchMapping("/board/{board_id}/comment/{comment_id}")
+    public ResponseEntity<CommentResDto> updateComment(@PathVariable(value = "comment_id") Long commentId,
+                                                     @RequestParam String comment) {
+        return ResponseEntity.ok(boardService.updateComment(commentId, comment));
+    }
+
+    @Operation(summary = "댓글 삭제", description = "성공하면 Comment 데이터베이스에 저장되어있는 id 값의 댓글 삭제")
+    @DeleteMapping("/board/{board_id}/comment/{comment_id}")
+    public void deleteComment(@PathVariable(value = "comment_id") Long commentId){
+        boardService.deleteComment(commentId);
+    }
+
+    @Operation(summary = "댓글 좋아요 등록 및 취소", description = "해당 댓글을 좋아요 누른 적이 없으면 해당 댓글에 좋아요 등록 및 좋아요 수 Up &"+ "\n\n" +
+            " 해당 댓글을 좋아요 누른 적이 있으면 해당 댓글에 좋아요 취소 및 좋아요 수 Down")
+    @PostMapping("/board/{board_id}/comment/{comment_id}/like")
+    public ResponseEntity<CommentResDto> likeComment(@PathVariable(value = "comment_id") Long commentId,
+                                                   @RequestParam(name = "memberId") Long memberId,
+                                                   @RequestParam(name = "like")Like like) {
+        return ResponseEntity.ok(boardService.likeComment(commentId, memberId, like));
+    }
 }
