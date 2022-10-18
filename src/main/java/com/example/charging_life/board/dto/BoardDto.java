@@ -18,6 +18,7 @@ public class BoardDto {
     private WriterDto member;
     private Category category;
     private Integer likes;
+    private Integer cntComments;
     private int visit;
     private List<Long> fileId;
     private String creationDateTime;
@@ -29,6 +30,7 @@ public class BoardDto {
         this.member = new WriterDto(board.getMember());
         this.category = board.getCategory();
         this.likes = board.getLikes();
+        this.cntComments = board.getComments().size();
         this.visit = board.getVisit();
         this.creationDateTime = board.getCreationDateTime();
     }
