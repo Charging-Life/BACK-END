@@ -96,4 +96,10 @@ public class MemberService implements UserDetailsService {
                 .orElseThrow(() -> new CustomException(ExceptionEnum.StationDoesNotExist));
         jpaMemberStationRepo.deleteByMemberAndChargingStation(member,station);
     }
+
+    @Transactional
+    public void removeDestination(Member member, String statId) {
+        ChargingStation station = jpaStationRepository.findByStatId(statId);
+        jpaMemberDestinationRepo.deleteByChargingStationAndMember(station,member);
+    }
 }
