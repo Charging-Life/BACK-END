@@ -107,13 +107,13 @@ public class MemberController {
 
     @PreAuthorize("hasAuthority('USER')")
     @Operation(summary = "충전소 목적지 등록")
-    @PostMapping("/member/destination/{statId}")
+    @PostMapping("/member/destination")
     public void enrollDestination(
             @RequestHeader(name = "Authorization") String accessToken,
-            @PathVariable(name = "statId") String statId) {
+            @RequestBody StationReqDto stationReqDto) {
 
         Member member = findMemberByToken(accessToken);
-        memberService.enrollDestination(member,statId);
+        memberService.enrollDestination(member,stationReqDto);
     }
 
     public Member findMemberByToken(String accessToken) {
