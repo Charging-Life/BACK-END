@@ -121,14 +121,14 @@ public class ApiService {
 
         Integer chargerId = Integer.valueOf((String) jsonObject.get("chgerId"));
         String chargerType = (String) jsonObject.get("chgerType");
-        Integer output = Math.toIntExact(verify(jsonObject, "output"));
+        Integer output = verify(jsonObject, "output") != null ? verify(jsonObject, "output").intValue() : null;
         Integer stat = Integer.valueOf((String) jsonObject.get("stat"));
         Long statUpdDt = verify(jsonObject, "statUpdDt");
         Long lastTsdt = verify(jsonObject, "lastTsdt");
         Long lastTedt = verify(jsonObject, "lastTedt");
         Long nowTsdt = verify(jsonObject, "nowTsdt");
 
-//        System.out.println(output +"/"+ stat +"/"+ statUpdDt);
+//        System.out.println(chargerId +"/"+ chargerType +"/"+ output+"/"+ stat +"/"+ statUpdDt+"/"+ lastTsdt +"/"+ lastTedt+"/"+ nowTsdt);
         Charger charger = Charger.builder()
                 .chargingStation(chargingStation)
                 .chargerId(chargerId)
@@ -140,7 +140,7 @@ public class ApiService {
                 .lastTedt(lastTedt)
                 .nowTsdt(nowTsdt)
                 .build();
-        jpaChargerRepository.save(charger);
+        jpaChargerRepository.saveAndFlush(charger);
         //System.out.println(charger.getChargingStation().getId().toString() + " " + charger.getId().toString());
     }
 
@@ -186,7 +186,7 @@ public class ApiService {
 
         //if the data isn't exist in database then stored in both ChargingStation and Charger
         if (findChargingStation == null) {
-            ChargingStation saveChargingStation = jpaStationRepository.save(chargingStation);
+            ChargingStation saveChargingStation = jpaStationRepository.saveAndFlush(chargingStation);
             //save the data to charger
             saveCharger(jsonObject, saveChargingStation);
         }
@@ -203,7 +203,7 @@ public class ApiService {
             Integer start = findStationAnalysis();
             return ((start/1000)+1);
         } else {
-            return 1;
+            return 8;
         }
     }
 
@@ -223,8 +223,12 @@ public class ApiService {
                 else {log.info("saveBusinessData : " + i + " page start at " + startTime);}
             }
             else {
-            if (isnew) {log.info("updateChargingStationData : " + i + " page start at " + startTime);}
-            else {log.info("saveChargingStationData : " + i + " page start at " + startTime);}
+//            if (isnew) {log.info("updateChargingStationData : " + i + " page start at " + startTime);}
+//            else {log.info("saveChargingStationData : " + i + " page start at " + startTime);}
+           if (isnew) {
+               log.info("updateChargingStationData : " + i + " page start at " + startTime);}
+           else {
+               log.info("saveChargingStationData : " + i + " page start at " + startTime);}
             }
             //used to create a mutable
             StringBuilder result = new StringBuilder();
