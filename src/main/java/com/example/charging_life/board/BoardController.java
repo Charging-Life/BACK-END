@@ -6,10 +6,11 @@ import com.example.charging_life.board.entity.Category;
 import com.example.charging_life.board.entity.Like;
 import com.example.charging_life.file.FileService;
 import com.example.charging_life.file.dto.FileResDto;
+import com.example.charging_life.member.MemberController;
+import com.example.charging_life.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,7 @@ public class BoardController {
 
     private final BoardService boardService;
     private final FileService fileService;
+    private final MemberController memberController;
 
     @Operation(summary = "게시판 글 작성", description = "성공하면 게시글이 Board 데이터베이스에 저장" + "\n\n"+
             "‼️form-data로 POST 내용은 boardReqDto로 묶어서 한번에 보내야함‼️"+ "\n\n"+
@@ -79,10 +81,12 @@ public class BoardController {
             "Content-Type: application/pdf"  + "\n\n"+
             "파일 첨부"+ "\n\n")
     @PostMapping("/board")
-    public ResponseEntity<BoardResDto> create(@RequestPart(value = "boardReqDto") BoardReqDto boardReqDto,
-                              @RequestPart(value = "file", required = false) List<MultipartFile> files
+    public ResponseEntity<BoardResDto> create(@RequestHeader(name = "Authorization") String accessToken,
+                                              @RequestPart(value = "boardReqDto") BoardReqDto boardReqDto,
+                                              @RequestPart(value = "file", required = false) List<MultipartFile> files
     ) throws Exception {
-        return ResponseEntity.ok(boardService.create(boardReqDto, files));
+        Member member = memberController.findMemberByToken(accessToken);
+        return ResponseEntity.ok(boardService.create(member, boardReqDto, files));
     }
 
     @Operation(summary = "게시글 리스트", description = "성공하면 Board 데이터베이스에 저장되어있는 모든 게시글 출력")
@@ -113,8 +117,10 @@ public class BoardController {
             "  \"description\" : \"description1\",\n" + "\n\n"+
             "}\n"+ "\n\n")
     @PatchMapping("/board/{id}")
-    public ResponseEntity<BoardUpdateResDto> updateBoard(@PathVariable Long id, @RequestBody BoardUpdateReqDto boardUpdateReqDto) {
-        return ResponseEntity.ok(boardService.update(id, boardUpdateReqDto));
+    public ResponseEntity<BoardUpdateResDto> updateBoard(@RequestHeader(name = "Authorization") String accessToken,
+                                                         @PathVariable Long id, @RequestBody BoardUpdateReqDto boardUpdateReqDto) {
+        Member member = memberController.findMemberByToken(accessToken);
+        return ResponseEntity.ok(boardService.update(id, member, boardUpdateReqDto));
     }
 
     @Operation(summary = "게시글 삭제", description = "성공하면 Board 데이터베이스에 저장되어있는 id 값의 게시글 삭제")
@@ -133,10 +139,11 @@ public class BoardController {
     @Operation(summary = "게시글 좋아요 등록 및 취소", description = "해당 게시글을 좋아요 누른 적이 없으면 해당 게시글에 좋아요 등록 및 좋아요 수 Up &"+ "\n\n" +
             " 해당 게시글을 좋아요 누른 적이 있으면 해당 게시글에 좋아요 취소 및 좋아요 수 Down")
     @PostMapping("/board/{id}/like")
-    public ResponseEntity<BoardLikeResDto> likeBoard(@PathVariable Long id,
-                                                     @RequestParam(name = "memberId") Long memberId,
+    public ResponseEntity<BoardLikeResDto> likeBoard(@RequestHeader(name = "Authorization") String accessToken,
+                                                     @PathVariable Long id,
                                                      @RequestParam(name = "like") Like like) {
-        return ResponseEntity.ok(boardService.like(id, memberId, like));
+        Member member = memberController.findMemberByToken(accessToken);
+        return ResponseEntity.ok(boardService.like(id, member, like));
     }
 
     @Operation(summary = "댓글 작성", description = "성공하면 해당 boardId에 댓글이 해당 Comment 데이터베이스에 저장" + "\n\n"+
@@ -146,9 +153,11 @@ public class BoardController {
             "  \"writer\" : 1,\n" + "\n\n"+
             "}\n"+ "\n\n")
     @PostMapping("/board/{board_id}/comment")
-    public ResponseEntity<CommentResDto> createComment(@RequestPart(value = "commentReqDto") CommentReqDto commentReqDto,
+    public ResponseEntity<CommentResDto> createComment(@RequestHeader(name = "Authorization") String accessToken,
+                                                       @RequestPart(value = "commentReqDto") CommentReqDto commentReqDto,
                                                      @PathVariable(value = "board_id") Long id) throws Exception {
-        return ResponseEntity.ok(boardService.createComment(commentReqDto, id));
+        Member member = memberController.findMemberByToken(accessToken);
+        return ResponseEntity.ok(boardService.createComment(member, commentReqDto, id));
     }
 
     @Operation(summary = "댓글 리스트", description = "성공하면 해당 boardId의 Comment 데이터베이스에 저장되어있는 모든 댓글 출력")
@@ -167,9 +176,11 @@ public class BoardController {
             "⭐️comment 부분 수정 가능⭐️"+ "\n\n" +
             "http://115.85.181.24:8084/board/{board_id}/comment/{comment_id}?comment=comment2")
     @PatchMapping("/board/{board_id}/comment/{comment_id}")
-    public ResponseEntity<CommentResDto> updateComment(@PathVariable(value = "comment_id") Long commentId,
-                                                     @RequestParam String comment) {
-        return ResponseEntity.ok(boardService.updateComment(commentId, comment));
+    public ResponseEntity<CommentResDto> updateComment(@RequestHeader(name = "Authorization") String accessToken,
+                                                       @PathVariable(value = "comment_id") Long commentId,
+                                                       @RequestParam String comment) {
+        Member member = memberController.findMemberByToken(accessToken);
+        return ResponseEntity.ok(boardService.updateComment(member, commentId, comment));
     }
 
     @Operation(summary = "댓글 삭제", description = "성공하면 Comment 데이터베이스에 저장되어있는 id 값의 댓글 삭제")
@@ -181,9 +192,22 @@ public class BoardController {
     @Operation(summary = "댓글 좋아요 등록 및 취소", description = "해당 댓글을 좋아요 누른 적이 없으면 해당 댓글에 좋아요 등록 및 좋아요 수 Up &"+ "\n\n" +
             " 해당 댓글을 좋아요 누른 적이 있으면 해당 댓글에 좋아요 취소 및 좋아요 수 Down")
     @PostMapping("/board/{board_id}/comment/{comment_id}/like")
-    public ResponseEntity<CommentResDto> likeComment(@PathVariable(value = "comment_id") Long commentId,
-                                                   @RequestParam(name = "memberId") Long memberId,
-                                                   @RequestParam(name = "like")Like like) {
-        return ResponseEntity.ok(boardService.likeComment(commentId, memberId, like));
+    public ResponseEntity<CommentResDto> likeComment(@RequestHeader(name = "Authorization") String accessToken,
+                                                     @PathVariable(value = "comment_id") Long commentId,
+                                                     @RequestParam(name = "like")Like like) {
+        Member member = memberController.findMemberByToken(accessToken);
+        return ResponseEntity.ok(boardService.likeComment(commentId, member, like));
+    }
+
+    @Operation(summary = "게시글과 댓글 좋아요 등록 여부 확인", description = "해당 User가 좋아요를 놀렀는지 확인 여부 API" +"\n\n"+
+    "해당 USER가 좋아요 리스트에 존재하면 \"PRESENT\"" +"\n\n"+
+    "해당 USER가 좋아요 리스트에 존재하지 않으면 \"PASS\""+"\n\n"+
+    "댓글 좋아요 등록 여부는 ?comment_id = {comment_id} ")
+    @GetMapping("/board/{board_id}/check")
+    public ResponseEntity<String> checkLike(@RequestHeader(name = "Authorization") String accessToken,
+                                            @PathVariable(value = "board_id") Long boardId,
+                                            @RequestParam(name = "comment_id", required = false) Long commentId) {
+        Member member = memberController.findMemberByToken(accessToken);
+        return ResponseEntity.ok(boardService.checkLike(member, boardId, commentId));
     }
 }

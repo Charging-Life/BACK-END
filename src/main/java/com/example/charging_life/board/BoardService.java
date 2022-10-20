@@ -64,9 +64,7 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardResDto create(BoardReqDto boardReqDto, List<MultipartFile> files) throws Exception {
-        Member member = jpaMemberRepo.findById(boardReqDto.getMemberId())
-                .orElseThrow(() -> new CustomException(ExceptionEnum.MemberDoesNotExist));
+    public BoardResDto create(Member member, BoardReqDto boardReqDto, List<MultipartFile> files) throws Exception {
         Long id = getStation(member, boardReqDto);
         List<File> fileList = fileHandler.parseFileInfo(files);
         Board board = jpaBoardRepository.getReferenceById(id);
@@ -80,9 +78,10 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardUpdateResDto update(Long id, BoardUpdateReqDto boardUpdateReqDto) {
-        jpaBoardRepository.findById(id)
+    public BoardUpdateResDto update(Long id, Member member, BoardUpdateReqDto boardUpdateReqDto) {
+        Board oneBoard = jpaBoardRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ExceptionEnum.PageDoesNotExist));
+        if (oneBoard.getMember() == member) {
         String updateTitle = boardUpdateReqDto.getTitle();
         String updateDescription = boardUpdateReqDto.getDescription();
         String updateDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy.MM.dd HH:mm"));
@@ -93,6 +92,7 @@ public class BoardService {
             jpaBoardRepository.updateDescription(updateDescription, id);
         }
         jpaBoardRepository.updateUpdateDateTime(updateDateTime, id);
+        }
         Board board = jpaBoardRepository.getReferenceById(id);
         BoardUpdateResDto boardUpdateResDto = new BoardUpdateResDto(board);
         return boardUpdateResDto;
@@ -129,13 +129,12 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardLikeResDto like(Long id, Long memberId, Like like) {
+    public BoardLikeResDto like(Long id, Member member, Like like) {
         jpaBoardRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ExceptionEnum.PageDoesNotExist));
-        Member member = jpaMemberRepo.getReferenceById(memberId);
         Board board = jpaBoardRepository.getReferenceById(id);
-        System.out.println(jpaLikeMembersRepository.findByBoard_idAndMember_id(id, memberId));
-        Optional<LikeMembers> likeMembers = jpaLikeMembersRepository.findByBoard_idAndMember_id(id, memberId);
+        System.out.println(jpaLikeMembersRepository.findByBoard_idAndMember_id(id, member.getId()));
+        Optional<LikeMembers> likeMembers = jpaLikeMembersRepository.findByBoard_idAndMember_id(id, member.getId());
         if (like.getLike() == "LIKE") {
             if (!likeMembers.isPresent()) {
             LikeMembers likeMember = LikeMembers.builder()
@@ -146,7 +145,7 @@ public class BoardService {
             }
         } else {
             if (likeMembers.isPresent()) {
-                Long deleteId = jpaLikeMembersRepository.findByBoard_idAndMember_id(id, memberId).get().getId();
+                Long deleteId = jpaLikeMembersRepository.findByBoard_idAndMember_id(id, member.getId()).get().getId();
                 jpaLikeMembersRepository.deleteById(deleteId);}
         }
         Long count = jpaLikeMembersRepository.findByBoard_id(id).stream().count();
@@ -158,9 +157,8 @@ public class BoardService {
     }
 
     @Transactional
-    public CommentResDto createComment(CommentReqDto commentReqDto, Long boardId) {
+    public CommentResDto createComment(Member member, CommentReqDto commentReqDto, Long boardId) {
         String contents = commentReqDto.getComment();
-        Member member = jpaMemberRepo.getReferenceById(commentReqDto.getWriter());
         Board board = jpaBoardRepository.findById(boardId).orElseThrow(() -> new CustomException(ExceptionEnum.PageDoesNotExist));
 
         Comment comment = Comment.builder()
@@ -183,10 +181,13 @@ public class BoardService {
     }
 
     @Transactional
-    public CommentResDto updateComment(Long commentId, String comment) {
+    public CommentResDto updateComment(Member member, Long commentId, String comment) {
+        Comment oneComment = jpaCommentRepository.findById(commentId).orElseThrow(() -> new CustomException(ExceptionEnum.CommentDoesNotExist));
+        if (oneComment.getMember() == member){
         String updateDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy.MM.dd HH:mm"));
         jpaCommentRepository.updateComment(comment, commentId);
         jpaCommentRepository.updateUpdateDateTime(updateDateTime, commentId);
+        }
         Comment updatecomment = jpaCommentRepository.getReferenceById(commentId);
         CommentResDto commentResDto = new CommentResDto(updatecomment);
         return commentResDto;
@@ -200,11 +201,10 @@ public class BoardService {
     }
 
     @Transactional
-    public CommentResDto likeComment(Long commentId, Long memberId, Like like) {
+    public CommentResDto likeComment(Long commentId, Member member, Like like) {
         Comment comment = jpaCommentRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(ExceptionEnum.CommentDoesNotExist));
-        Member member = jpaMemberRepo.getReferenceById(memberId);
-        Optional<CommentLikeMembers> commentLikeMembers = jpaCommentLikeMembersRepository.findByComment_idAndMember_id(commentId, memberId);
+        Optional<CommentLikeMembers> commentLikeMembers = jpaCommentLikeMembersRepository.findByComment_idAndMember_id(commentId, member.getId());
         if (like.getLike() == "LIKE"){
             if (!commentLikeMembers.isPresent()) {
             CommentLikeMembers commentLikeMember = CommentLikeMembers.builder()
@@ -216,7 +216,7 @@ public class BoardService {
         }
         else {
             if (commentLikeMembers.isPresent()) {
-                Long deleteId = jpaCommentLikeMembersRepository.findByComment_idAndMember_id(commentId, memberId).get().getId();
+                Long deleteId = jpaCommentLikeMembersRepository.findByComment_idAndMember_id(commentId, member.getId()).get().getId();
                 jpaCommentLikeMembersRepository.deleteById(deleteId);
             }
         }
@@ -232,5 +232,20 @@ public class BoardService {
         Comment commentRes = jpaCommentRepository.getReferenceById(id);
         CommentResDto commentResDto = new CommentResDto(commentRes);
         return commentResDto;
+    }
+
+    public String checkLike(Member member, Long boardId, Long commentId) {
+        if (commentId != null) {
+            if (jpaCommentLikeMembersRepository.findByComment_idAndMember_id(commentId, member.getId()).isPresent()){ return "PRESENT";}
+            else {
+                return "PASS";
+            }
+        }
+        else {
+            if (jpaLikeMembersRepository.findByBoard_idAndMember_id(boardId, member.getId()).isPresent()){return "PRESENT";}
+            else{
+                return "PASS";
+            }
+        }
     }
 }

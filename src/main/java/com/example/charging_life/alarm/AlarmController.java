@@ -1,6 +1,7 @@
 package com.example.charging_life.alarm;
 
 import com.example.charging_life.alarm.dto.*;
+import com.example.charging_life.member.MemberController;
 import com.example.charging_life.member.MemberService;
 import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.token.TokenService;
@@ -26,6 +27,7 @@ public class AlarmController {
     private final AlarmService alarmService;
     private final TokenService tokenService;
     private final MemberService memberService;
+    private final MemberController memberController;
 
     @PostMapping("/alarm/{id}")
     public void updateStationStat(@RequestBody StationStat stationStat, @PathVariable Long id) {
@@ -52,12 +54,14 @@ public class AlarmController {
     }
 
     @GetMapping("/qr")
-    public Object createQR(@RequestParam Long memberId, @RequestParam String chargerStatus) throws WriterException, IOException {
+    public Object createQR(@RequestHeader(name = "Authorization") String accessToken,
+                           @RequestParam String chargerStatus) throws WriterException, IOException {
         int width = 200;
         int height = 200;
+        Member member = memberController.findMemberByToken(accessToken);
 
         String qrCodeInfo = "{" + "\n" +
-                "\"id\" : " + memberId + "," + "\n" +
+                "\"id\" : " + member.getId() + "," + "\n" +
                 "\"charger\" : \"" + chargerStatus+ "\"\n" +
                 "}";
 
