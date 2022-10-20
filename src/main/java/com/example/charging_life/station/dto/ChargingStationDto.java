@@ -4,7 +4,6 @@ import com.example.charging_life.member.entity.MemberDestination;
 import com.example.charging_life.station.entity.Business;
 import com.example.charging_life.station.entity.Charger;
 import com.example.charging_life.station.entity.ChargingStation;
-import com.example.charging_life.station.entity.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,6 +30,7 @@ public class ChargingStationDto {
     private Long zcode;
     private String city;
     private Integer memberCount;
+    private Boolean checkDes;
 
 
     public ChargingStationDto(ChargingStation chargingStation) {
@@ -58,6 +58,10 @@ public class ChargingStationDto {
 
     public void addMemberCount(List<MemberDestination> toMembers) {
         this.memberCount = toMembers.size();
+    }
+
+    public void setCheckDes(boolean checkDes) {
+        this.checkDes = checkDes;
     }
 
     @Getter

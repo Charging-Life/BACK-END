@@ -54,10 +54,12 @@ public class StationService{
 
 
     // It is the station information function that comes out when we look for the station ID
-    public ChargingStationDto findStation(String statId) {
+    public ChargingStationDto findStation(String statId, Member member) {
         ChargingStation chargingStation = jpaStationRepository.findByStatId(statId);
         List<MemberDestination> toMembers = jpaMemberDestinationRepo.findByChargingStation(chargingStation);
+        boolean checkDes = jpaMemberDestinationRepo.existsByChargingStationAndMember(chargingStation, member);
         ChargingStationDto chargingStationDto = new ChargingStationDto(chargingStation);
+        chargingStationDto.setCheckDes(checkDes);
         chargingStationDto.addMemberCount(toMembers);
         return chargingStationDto;
     }

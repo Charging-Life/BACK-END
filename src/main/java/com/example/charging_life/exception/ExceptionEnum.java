@@ -14,6 +14,7 @@ public enum ExceptionEnum {
     EmailDuplicated(HttpStatus.BAD_REQUEST,2000,"이미 등록된 이메일 입니다."),
     EmailNotExisted(HttpStatus.BAD_REQUEST,2001,"이메일이 존재하지 않습니다."),
     Codeexpired(HttpStatus.BAD_REQUEST,2002,"만료된 인증코드 입니다."),
+    MemberDestinationDuplicated(HttpStatus.BAD_REQUEST,2003,"이미 목적지로 등록하였습니다."),
 
     MemberDoesNotExist(HttpStatus.NOT_FOUND, 3000, "등록되지 않은 회원입니다."),
     PageDoesNotExist(HttpStatus.NOT_FOUND, 3001, "해당 게시물이 존재하지 않습니다."),

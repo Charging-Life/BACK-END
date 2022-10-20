@@ -107,13 +107,24 @@ public class MemberController {
 
     @PreAuthorize("hasAuthority('USER')")
     @Operation(summary = "충전소 목적지 등록")
-    @PostMapping("/member/destination/{statId}")
+    @PostMapping("/member/destination")
     public void enrollDestination(
             @RequestHeader(name = "Authorization") String accessToken,
-            @PathVariable(name = "statId") String statId) {
+            @RequestBody StationReqDto stationReqDto) {
 
         Member member = findMemberByToken(accessToken);
-        memberService.enrollDestination(member,statId);
+        memberService.enrollDestination(member,stationReqDto);
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @Operation(summary = "충전소 목적지 취소")
+    @DeleteMapping("/member/destination/{statId}")
+    public void removeDestination(
+            @RequestHeader(name = "Authorization") String accessToken,
+            @PathVariable String statId) {
+
+        Member member = findMemberByToken(accessToken);
+        memberService.removeDestination(member,statId);
     }
 
     public Member findMemberByToken(String accessToken) {

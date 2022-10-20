@@ -61,8 +61,11 @@ public class MemberService implements UserDetailsService {
     }
 
     @Transactional
-    public void enrollDestination(Member member, String statId) {
-        ChargingStation station = jpaStationRepository.findByStatId(statId);
+    public void enrollDestination(Member member, StationReqDto stationReqDto) {
+        ChargingStation station = jpaStationRepository.findByStatId(stationReqDto.getStatId().get(0));
+        if (jpaMemberDestinationRepo.existsByChargingStationAndMember(station, member)) {
+            throw new CustomException(ExceptionEnum.MemberDestinationDuplicated);
+        }
         MemberDestination memberDestination = new MemberDestination(member, station);
         jpaMemberDestinationRepo.save(memberDestination);
     }
@@ -92,5 +95,11 @@ public class MemberService implements UserDetailsService {
         ChargingStation station = jpaStationRepository.findById(statId)
                 .orElseThrow(() -> new CustomException(ExceptionEnum.StationDoesNotExist));
         jpaMemberStationRepo.deleteByMemberAndChargingStation(member,station);
+    }
+
+    @Transactional
+    public void removeDestination(Member member, String statId) {
+        ChargingStation station = jpaStationRepository.findByStatId(statId);
+        jpaMemberDestinationRepo.deleteByChargingStationAndMember(station,member);
     }
 }

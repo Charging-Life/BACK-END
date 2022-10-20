@@ -4,21 +4,17 @@ import com.example.charging_life.member.MemberService;
 import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.station.dto.ChargingStationDto;
 import com.example.charging_life.station.dto.StationResDto;
-import com.example.charging_life.station.entity.ChargingStation;
 import com.example.charging_life.token.TokenService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -42,8 +38,12 @@ public class StationController {
     @Operation(summary = "해당 statId 충전소 정보",
             description = "충전소 정보와 즐겨찾기 여부 및 몇명이 접근하고있는지에 대한 정보 반환 ")
     @GetMapping("/station/{statId}")
-    public ResponseEntity<ChargingStationDto> getChargingStationId(@PathVariable String statId) throws IOException {
-        return ResponseEntity.ok(stationService.findStation(statId));
+    public ResponseEntity<ChargingStationDto> getChargingStationId(
+            @PathVariable String statId,
+            @RequestHeader(name = "Authorization") String accessToken) {
+        String email = tokenService.getEmailFromToken(accessToken);
+        Member member = memberService.findMemberByEmail(email);
+        return ResponseEntity.ok(stationService.findStation(statId,member));
     }
 
     @Operation(summary = "충전소 검색", description = "충전소 이름(statNm) or 광역시,도명(city) or 기업명(business)를 이용해 충전소를 검색할 수 있다.")
