@@ -1,7 +1,6 @@
 package com.example.charging_life.station;
 
 import com.example.charging_life.api.JpaStationAnalysisRepository;
-import com.example.charging_life.api.StationAnalysis;
 import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.member.entity.MemberChargingStation;
 import com.example.charging_life.member.entity.MemberDestination;
@@ -11,20 +10,10 @@ import com.example.charging_life.station.dto.StationResDto;
 import com.example.charging_life.station.entity.*;
 import com.example.charging_life.station.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,14 +44,16 @@ public class StationService{
 
     // It is the station information function that comes out when we look for the station ID
     public ChargingStationDto findStation(String statId, Member member) {
-        ChargingStation chargingStation = jpaStationRepository.findByStatId(statId);
-        List<MemberDestination> toMembers = jpaMemberDestinationRepo.findByChargingStation(chargingStation);
-        boolean checkDes = jpaMemberDestinationRepo.existsByChargingStationAndMember(chargingStation, member);
-        ChargingStationDto chargingStationDto = new ChargingStationDto(chargingStation);
-        chargingStationDto.setCheckDes(checkDes);
-        chargingStationDto.addMemberCount(toMembers);
-        return chargingStationDto;
+        ChargingStationDto stationDto = makeStationDetailDto(statId);
+        boolean checkDes = jpaMemberDestinationRepo.existsByIdAndMember(stationDto.getId(), member);
+        stationDto.setCheckDes(checkDes);
+        return stationDto;
     }
+
+    public ChargingStationDto findStation(String statId) {
+        return makeStationDetailDto(statId);
+    }
+
 
     public List<ChargingStationDto> findStationByManager(Member member) {
         List<ChargingStationDto> stationResDtos = new ArrayList<>();
@@ -120,5 +111,13 @@ public class StationService{
             stationResDtos.add(new StationResDto(chargingStation));
         }
         return stationResDtos;
+    }
+
+    public ChargingStationDto makeStationDetailDto(String statId) {
+        ChargingStation chargingStation = jpaStationRepository.findByStatId(statId);
+        List<MemberDestination> toMembers = jpaMemberDestinationRepo.findByChargingStation(chargingStation);
+        ChargingStationDto chargingStationDto = new ChargingStationDto(chargingStation);
+        chargingStationDto.addMemberCount(toMembers);
+        return chargingStationDto;
     }
 }

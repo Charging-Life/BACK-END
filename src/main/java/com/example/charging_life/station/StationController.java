@@ -40,10 +40,15 @@ public class StationController {
     @GetMapping("/station/{statId}")
     public ResponseEntity<ChargingStationDto> getChargingStationId(
             @PathVariable String statId,
-            @RequestHeader(name = "Authorization") String accessToken) {
-        String email = tokenService.getEmailFromToken(accessToken);
-        Member member = memberService.findMemberByEmail(email);
-        return ResponseEntity.ok(stationService.findStation(statId,member));
+            @RequestHeader(name = "Authorization",required = false) String accessToken) {
+
+        if (accessToken == null) {
+            return ResponseEntity.ok(stationService.findStation(statId));
+        } else {
+            String email = tokenService.getEmailFromToken(accessToken);
+            Member member = memberService.findMemberByEmail(email);
+            return ResponseEntity.ok(stationService.findStation(statId,member));
+        }
     }
 
     @Operation(summary = "충전소 검색", description = "충전소 이름(statNm) or 광역시,도명(city) or 기업명(business)를 이용해 충전소를 검색할 수 있다.")
