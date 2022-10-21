@@ -10,12 +10,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class BoardLikeReqDto {
-    private Member member;
     private Board board;
 
     @Builder
     public BoardLikeReqDto(LikeMembers likeMembers) {;
-        this.member = likeMembers.getMember();
         this.board = likeMembers.getBoard();
     }
 

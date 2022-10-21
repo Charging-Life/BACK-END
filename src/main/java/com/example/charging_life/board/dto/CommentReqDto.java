@@ -7,6 +7,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentReqDto {
     private String comment;
-    private Long writer;
 
 }

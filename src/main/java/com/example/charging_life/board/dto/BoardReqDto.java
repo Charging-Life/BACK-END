@@ -17,7 +17,6 @@ import java.util.List;
 public class BoardReqDto {
     private String title;
     private String description;
-    private Long memberId;
     private Category category;
     private String statId;
     private String creationDateTime;
@@ -26,7 +25,6 @@ public class BoardReqDto {
     public BoardReqDto(Board board) {
         this.title = board.getTitle();
         this.description = board.getDescription();
-        this.memberId = board.getMember().getId();
         this.category = board.getCategory();
         this.statId = board.getChargingStation().getStatId();
         this.creationDateTime = board.getCreationDateTime();

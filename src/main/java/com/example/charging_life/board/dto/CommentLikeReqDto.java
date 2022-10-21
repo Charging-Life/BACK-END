@@ -13,12 +13,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class CommentLikeReqDto {
-    private Long memberId;
     private Long commentId;
 
     @Builder
-    public CommentLikeReqDto(CommentLikeMembers commentLikeMembers) {;
-        this.memberId = commentLikeMembers.getMember().getId();
+    public CommentLikeReqDto(CommentLikeMembers commentLikeMembers) {
         this.commentId = commentLikeMembers.getComment().getId();
     }
 

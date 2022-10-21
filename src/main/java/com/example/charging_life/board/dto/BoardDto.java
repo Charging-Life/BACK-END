@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @NoArgsConstructor
@@ -19,7 +20,7 @@ public class BoardDto {
     private WriterDto member;
     private Category category;
     private Integer likes;
-    private StationDto chargingStation;
+    private Optional<StationDto> chargingStation;
     private Integer cntComments;
     private int visit;
     private List<Long> fileId;
@@ -32,7 +33,7 @@ public class BoardDto {
         this.member = new WriterDto(board.getMember());
         this.category = board.getCategory();
         this.likes = board.getLikes();
-        this.chargingStation = new StationDto(board.getChargingStation());
+        this.chargingStation = Optional.of(new StationDto(board.getChargingStation()));
         this.cntComments = board.getComments().size();
         this.visit = board.getVisit();
         this.creationDateTime = board.getCreationDateTime();
@@ -61,10 +62,10 @@ public class BoardDto {
         private Double lng;
 
         public StationDto(ChargingStation chargingStation) {
-            this.statId = chargingStation.getStatId();
-            this.statNm = chargingStation.getStatNm();
-            this.lat = chargingStation.getLat();
-            this.lng = chargingStation.getLng();
+            this.statId = chargingStation != null ? chargingStation.getStatId() : null;
+            this.statNm = chargingStation != null ?  chargingStation.getStatNm() : null;
+            this.lat = chargingStation != null ? chargingStation.getLat() : null;
+            this.lng = chargingStation != null ? chargingStation.getLng() : null;
         }
     }
 }

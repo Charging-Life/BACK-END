@@ -82,16 +82,16 @@ public class BoardService {
         Board oneBoard = jpaBoardRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ExceptionEnum.PageDoesNotExist));
         if (oneBoard.getMember() == member) {
-        String updateTitle = boardUpdateReqDto.getTitle();
-        String updateDescription = boardUpdateReqDto.getDescription();
-        String updateDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy.MM.dd HH:mm"));
-        if (updateTitle != null) {
-            jpaBoardRepository.updateTitle(updateTitle, id);
-        }
-        if (updateDescription != null) {
-            jpaBoardRepository.updateDescription(updateDescription, id);
-        }
-        jpaBoardRepository.updateUpdateDateTime(updateDateTime, id);
+            String updateTitle = boardUpdateReqDto.getTitle();
+            String updateDescription = boardUpdateReqDto.getDescription();
+            String updateDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy.MM.dd HH:mm"));
+            if (updateTitle != null) {
+                jpaBoardRepository.updateTitle(updateTitle, id);
+            }
+            if (updateDescription != null) {
+                jpaBoardRepository.updateDescription(updateDescription, id);
+            }
+            jpaBoardRepository.updateUpdateDateTime(updateDateTime, id);
         }
         Board board = jpaBoardRepository.getReferenceById(id);
         BoardUpdateResDto boardUpdateResDto = new BoardUpdateResDto(board);
@@ -137,11 +137,11 @@ public class BoardService {
         Optional<LikeMembers> likeMembers = jpaLikeMembersRepository.findByBoard_idAndMember_id(id, member.getId());
         if (like.getLike() == "LIKE") {
             if (!likeMembers.isPresent()) {
-            LikeMembers likeMember = LikeMembers.builder()
-                    .board(board)
-                    .member(member)
-                    .build();
-            jpaLikeMembersRepository.save(likeMember);
+                LikeMembers likeMember = LikeMembers.builder()
+                        .board(board)
+                        .member(member)
+                        .build();
+                jpaLikeMembersRepository.save(likeMember);
             }
         } else {
             if (likeMembers.isPresent()) {
@@ -184,9 +184,9 @@ public class BoardService {
     public CommentResDto updateComment(Member member, Long commentId, String comment) {
         Comment oneComment = jpaCommentRepository.findById(commentId).orElseThrow(() -> new CustomException(ExceptionEnum.CommentDoesNotExist));
         if (oneComment.getMember() == member){
-        String updateDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy.MM.dd HH:mm"));
-        jpaCommentRepository.updateComment(comment, commentId);
-        jpaCommentRepository.updateUpdateDateTime(updateDateTime, commentId);
+            String updateDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy.MM.dd HH:mm"));
+            jpaCommentRepository.updateComment(comment, commentId);
+            jpaCommentRepository.updateUpdateDateTime(updateDateTime, commentId);
         }
         Comment updatecomment = jpaCommentRepository.getReferenceById(commentId);
         CommentResDto commentResDto = new CommentResDto(updatecomment);
@@ -201,17 +201,17 @@ public class BoardService {
     }
 
     @Transactional
-    public CommentResDto likeComment(Long commentId, Member member, Like like) {
+    public CommentLikeResDto likeComment(Long commentId, Member member, Like like) {
         Comment comment = jpaCommentRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(ExceptionEnum.CommentDoesNotExist));
         Optional<CommentLikeMembers> commentLikeMembers = jpaCommentLikeMembersRepository.findByComment_idAndMember_id(commentId, member.getId());
         if (like.getLike() == "LIKE"){
             if (!commentLikeMembers.isPresent()) {
-            CommentLikeMembers commentLikeMember = CommentLikeMembers.builder()
-                    .comment(comment)
-                    .member(member)
-                    .build();
-            jpaCommentLikeMembersRepository.save(commentLikeMember);
+                CommentLikeMembers commentLikeMember = CommentLikeMembers.builder()
+                        .comment(comment)
+                        .member(member)
+                        .build();
+                jpaCommentLikeMembersRepository.save(commentLikeMember);
             }
         }
         else {
@@ -224,8 +224,8 @@ public class BoardService {
         Integer likes = count.intValue();
         jpaCommentRepository.updateLikes(likes, commentId);
         Comment commentRes = jpaCommentRepository.getReferenceById(commentId);
-        CommentResDto commentResDto = new CommentResDto(commentRes);
-        return commentResDto;
+        CommentLikeResDto commentLikeResDto = new CommentLikeResDto(commentRes);
+        return commentLikeResDto;
     }
 
     public CommentResDto findComment(Long id) {
