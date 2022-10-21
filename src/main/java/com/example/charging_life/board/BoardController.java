@@ -43,7 +43,6 @@ public class BoardController {
             "{\n" + "\n\n"+
             "  \"title\" : \"title1\",\n" + "\n\n"+
             "  \"description\" : \"description1\",\n" + "\n\n"+
-            "  \"memberId\" : 1,\n" + "\n\n"+
             "  \"category\" : \"FREE\"\n" + "\n\n"+
             "}\n"+ "\n\n"+
             "✅ category가 \"Station\"일 때"  + "\n\n"+
@@ -53,7 +52,6 @@ public class BoardController {
             "{\n" + "\n\n"+
             "  \"title\" : \"title1\",\n" + "\n\n"+
             "  \"description\" : \"description1\",\n" + "\n\n"+
-            "  \"memberId\" : 1,\n" + "\n\n"+
             "  \"statId\" : \"ME000006\",\n"+"\n\n"+
             "  \"category\" : \"FREE\"\n" + "\n\n"+
             "}\n"+ "\n\n"+
@@ -64,7 +62,6 @@ public class BoardController {
             "{\n" + "\n\n"+
             "  \"title\" : \"title1\",\n" + "\n\n"+
             "  \"description\" : \"description1\",\n" + "\n\n"+
-            "  \"memberId\" : 1,\n" + "\n\n"+
             "  \"statId\" : \"ME000006\",\n"+"\n\n"+
             "  \"category\" : \"FREE\"\n" + "\n\n"+
             "}\n"+ "\n\n"+
@@ -130,7 +127,7 @@ public class BoardController {
     }
 
     @Operation(summary = "카테고리별 게시글 출력", description = "성공하면 Board 데이터베이스에 저장되어있는 게시글을 카테고리 별 조회"+ "\n\n" +
-    "\"http://115.85.181.24:8084/board?category=FREE\"")
+            "\"http://115.85.181.24:8084/board?category=FREE\"")
     @GetMapping("/board")
     public ResponseEntity<List<Board>> getBoardByCategory(@RequestParam(value = "category", required = false) Category category) throws IOException {
         return ResponseEntity.ok(boardService.findboardByCategory(category));
@@ -149,15 +146,14 @@ public class BoardController {
     @Operation(summary = "댓글 작성", description = "성공하면 해당 boardId에 댓글이 해당 Comment 데이터베이스에 저장" + "\n\n"+
             "\uD83D\uDCCC 내용" + "\n\n"+
             "{\n" + "\n\n"+
-            "  \"comment\" : \"comment1\",\n" + "\n\n"+
-            "  \"writer\" : 1,\n" + "\n\n"+
+            "  \"comment\" : \"comment1\"\n" + "\n\n"+
             "}\n"+ "\n\n")
     @PostMapping("/board/{board_id}/comment")
     public ResponseEntity<CommentResDto> createComment(@RequestHeader(name = "Authorization") String accessToken,
                                                        @RequestPart(value = "commentReqDto") CommentReqDto commentReqDto,
-                                                     @PathVariable(value = "board_id") Long id) throws Exception {
+                                                       @PathVariable(value = "board_id") Long boardId) throws Exception {
         Member member = memberController.findMemberByToken(accessToken);
-        return ResponseEntity.ok(boardService.createComment(member, commentReqDto, id));
+        return ResponseEntity.ok(boardService.createComment(member, commentReqDto, boardId));
     }
 
     @Operation(summary = "댓글 리스트", description = "성공하면 해당 boardId의 Comment 데이터베이스에 저장되어있는 모든 댓글 출력")
@@ -192,17 +188,17 @@ public class BoardController {
     @Operation(summary = "댓글 좋아요 등록 및 취소", description = "해당 댓글을 좋아요 누른 적이 없으면 해당 댓글에 좋아요 등록 및 좋아요 수 Up &"+ "\n\n" +
             " 해당 댓글을 좋아요 누른 적이 있으면 해당 댓글에 좋아요 취소 및 좋아요 수 Down")
     @PostMapping("/board/{board_id}/comment/{comment_id}/like")
-    public ResponseEntity<CommentResDto> likeComment(@RequestHeader(name = "Authorization") String accessToken,
-                                                     @PathVariable(value = "comment_id") Long commentId,
-                                                     @RequestParam(name = "like")Like like) {
+    public ResponseEntity<CommentLikeResDto> likeComment(@RequestHeader(name = "Authorization") String accessToken,
+                                                         @PathVariable(value = "comment_id") Long commentId,
+                                                         @RequestParam(name = "like")Like like) {
         Member member = memberController.findMemberByToken(accessToken);
         return ResponseEntity.ok(boardService.likeComment(commentId, member, like));
     }
 
     @Operation(summary = "게시글과 댓글 좋아요 등록 여부 확인", description = "해당 User가 좋아요를 놀렀는지 확인 여부 API" +"\n\n"+
-    "해당 USER가 좋아요 리스트에 존재하면 \"PRESENT\"" +"\n\n"+
-    "해당 USER가 좋아요 리스트에 존재하지 않으면 \"PASS\""+"\n\n"+
-    "댓글 좋아요 등록 여부는 ?comment_id = {comment_id} ")
+            "해당 USER가 좋아요 리스트에 존재하면 \"PRESENT\"" +"\n\n"+
+            "해당 USER가 좋아요 리스트에 존재하지 않으면 \"PASS\""+"\n\n"+
+            "댓글 좋아요 등록 여부는 ?comment_id = {comment_id} ")
     @GetMapping("/board/{board_id}/check")
     public ResponseEntity<String> checkLike(@RequestHeader(name = "Authorization") String accessToken,
                                             @PathVariable(value = "board_id") Long boardId,
