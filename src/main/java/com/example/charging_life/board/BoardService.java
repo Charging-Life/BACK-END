@@ -175,10 +175,10 @@ public class BoardService {
 
     }
 
-    public List<CommentResDto> findCommentList(Long boardId) {
+    public List<CommentLikeResDto> findCommentList(Long boardId) {
         List<Comment> comments = jpaCommentRepository.findByBoardIdOrderByUpdateDateTimeDesc(boardId);
-        List<CommentResDto> commentResDto = comments.stream().map(CommentResDto::new).collect(Collectors.toList());
-        return commentResDto;
+        List<CommentLikeResDto> commentLikeResDtos = comments.stream().map(CommentLikeResDto::new).collect(Collectors.toList());
+        return commentLikeResDtos;
     }
 
     @Transactional
@@ -229,10 +229,10 @@ public class BoardService {
         return commentLikeResDto;
     }
 
-    public CommentResDto findComment(Long id) {
+    public CommentLikeResDto findComment(Long id) {
         Comment commentRes = jpaCommentRepository.getReferenceById(id);
-        CommentResDto commentResDto = new CommentResDto(commentRes);
-        return commentResDto;
+        CommentLikeResDto commentLikeResDto = new CommentLikeResDto(commentRes);
+        return commentLikeResDto;
     }
 
     public String checkLike(Member member, Long boardId, Long commentId) {
