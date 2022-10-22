@@ -37,3 +37,4 @@ out/
 .vscode/
 *application-dev.yml
 src/main/resources/keystore.p12
+*DS_Store
