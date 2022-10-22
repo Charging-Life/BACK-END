@@ -129,7 +129,7 @@ public class BoardController {
     @Operation(summary = "카테고리별 게시글 출력", description = "성공하면 Board 데이터베이스에 저장되어있는 게시글을 카테고리 별 조회"+ "\n\n" +
             "\"http://115.85.181.24:8084/board?category=FREE\"")
     @GetMapping("/board")
-    public ResponseEntity<List<Board>> getBoardByCategory(@RequestParam(value = "category", required = false) Category category) throws IOException {
+    public ResponseEntity<List<BoardDto>> getBoardByCategory(@RequestParam(value = "category", required = false) Category category) throws IOException {
         return ResponseEntity.ok(boardService.findboardByCategory(category));
     }
 
