@@ -45,7 +45,7 @@ public class StationService{
     // It is the station information function that comes out when we look for the station ID
     public ChargingStationDto findStation(String statId, Member member) {
         ChargingStationDto stationDto = makeStationDetailDto(statId);
-        boolean checkDes = jpaMemberDestinationRepo.existsByIdAndMember(stationDto.getId(), member);
+        boolean checkDes = jpaMemberDestinationRepo.existsByChargingStation_idAndMember(stationDto.getId(), member);
         stationDto.setCheckDes(checkDes);
         return stationDto;
     }

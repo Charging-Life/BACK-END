@@ -63,7 +63,7 @@ public class MemberService implements UserDetailsService {
     @Transactional
     public void enrollDestination(Member member, StationReqDto stationReqDto) {
         ChargingStation station = jpaStationRepository.findByStatId(stationReqDto.getStatId().get(0));
-        if (jpaMemberDestinationRepo.existsByIdAndMember(station.getId(), member)) {
+        if (jpaMemberDestinationRepo.existsByChargingStation_idAndMember(station.getId(), member)) {
             throw new CustomException(ExceptionEnum.MemberDestinationDuplicated);
         }
         MemberDestination memberDestination = new MemberDestination(member, station);
