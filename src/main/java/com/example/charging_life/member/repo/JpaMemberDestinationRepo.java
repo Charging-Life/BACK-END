@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface JpaMemberDestinationRepo extends JpaRepository<MemberDestination,Long> {
     List<MemberDestination> findByChargingStation(ChargingStation chargingStation);
-    boolean existsByIdAndMember(Long id, Member member);
+    boolean existsByChargingStation_idAndMember(Long id, Member member);
     void deleteByChargingStationAndMember(ChargingStation chargingStation, Member member);
 }
