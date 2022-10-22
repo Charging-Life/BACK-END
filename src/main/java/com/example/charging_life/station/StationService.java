@@ -89,7 +89,7 @@ public class StationService{
     }
 
     // It is the station information function that comes out when we look for the station name or city or business name
-    public List<StationResDto> findStationByQuery(String statNm, String city, String business) {
+    public List<ChargingStationDto> findStationByQuery(String statNm, String city, String business) {
         Optional<Long> cityId = Optional.ofNullable(fillCity(city));
         Optional<Long> businessId = Optional.ofNullable(fillBusiness(business));
         Optional<String> statName = Optional.ofNullable(fillStationName(statNm));
@@ -106,11 +106,11 @@ public class StationService{
         else {
             stationsByQuery = jpaStationRepository.findByZcode_IdOrBusiness_IdOrStatNmContaining(cityId, businessId, statName);
         }
-        List<StationResDto> stationResDtos = new ArrayList<>();
+        List<ChargingStationDto> chargingStationDtoList = new ArrayList<>();
         for (ChargingStation chargingStation : stationsByQuery) {
-            stationResDtos.add(new StationResDto(chargingStation));
+            chargingStationDtoList.add(new ChargingStationDto(chargingStation));
         }
-        return stationResDtos;
+        return chargingStationDtoList;
     }
 
     public ChargingStationDto makeStationDetailDto(String statId) {

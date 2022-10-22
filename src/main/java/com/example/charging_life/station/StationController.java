@@ -53,7 +53,7 @@ public class StationController {
 
     @Operation(summary = "충전소 검색", description = "충전소 이름(statNm) or 광역시,도명(city) or 기업명(business)를 이용해 충전소를 검색할 수 있다.")
     @GetMapping("/station")
-    public ResponseEntity<List<StationResDto>> getStationByQurey(@Parameter(name = "statNm", description = "?statNm=주차장")@RequestParam(value = "statNm", required = false) String statNm,
+    public ResponseEntity<List<ChargingStationDto>> getStationByQurey(@Parameter(name = "statNm", description = "?statNm=주차장")@RequestParam(value = "statNm", required = false) String statNm,
                                                                  @Parameter(name = "city", description = "?city=서울특별시")@RequestParam(value = "city", required = false) String city,
                                                                  @Parameter(name = "business", description = "?business=환경부")@RequestParam(value = "business", required = false) String business
     ) {
