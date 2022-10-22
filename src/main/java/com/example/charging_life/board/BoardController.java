@@ -158,13 +158,13 @@ public class BoardController {
 
     @Operation(summary = "댓글 리스트", description = "성공하면 해당 boardId의 Comment 데이터베이스에 저장되어있는 모든 댓글 출력")
     @GetMapping("/board/{board_id}/comment")
-    public ResponseEntity<List<CommentResDto>> getCommentList(@PathVariable(value = "board_id") Long id) throws IOException {
+    public ResponseEntity<List<CommentLikeResDto>> getCommentList(@PathVariable(value = "board_id") Long id) throws IOException {
         return ResponseEntity.ok(boardService.findCommentList(id));
     }
 
     @Operation(summary = "댓글 상세조회", description = "성공하면 Comment 데이터베이스에 저장되어있는 id 값의 댓글 출력")
     @GetMapping("/board/{board_id}/comment/{comment_id}")
-    public ResponseEntity<CommentResDto> getComment(@PathVariable(value = "comment_id") Long id) throws IOException {
+    public ResponseEntity<CommentLikeResDto> getComment(@PathVariable(value = "comment_id") Long id) throws IOException {
         return ResponseEntity.ok(boardService.findComment(id));
     }
 
