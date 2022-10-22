@@ -18,7 +18,8 @@ public class CommentLikeResDto {
     private Integer likes;
     private List<Long> commentLikeMember = new ArrayList<>();
     private Long boardId;
-    private Long memberId;
+    private String memberEmail;
+    private String memberName;
 
 
     public CommentLikeResDto(Comment comment) {
@@ -32,6 +33,7 @@ public class CommentLikeResDto {
             this.commentLikeMember.add(commentLikeMembers.getMember().getId());
         }
         this.boardId = comment.getBoard().getId();
-        this.memberId = comment.getMember().getId();
+        this.memberEmail = comment.getMember().getEmail();
+        this.memberName = comment.getMember().getName();
     }
 }
