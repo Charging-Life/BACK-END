@@ -123,9 +123,10 @@ public class BoardService {
         return boardResDto;
     }
 
-    public List<Board> findboardByCategory(Category category) {
+    public List<BoardDto> findboardByCategory(Category category) {
         List<Board> board = jpaBoardRepository.findByCategoryOrderByUpdateDateTimeDesc(category);
-        return board;
+        List<BoardDto> boardDtos = board.stream().map(BoardDto::new).collect(Collectors.toList());
+        return boardDtos;
     }
 
     @Transactional

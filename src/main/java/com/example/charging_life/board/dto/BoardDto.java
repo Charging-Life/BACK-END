@@ -2,12 +2,14 @@ package com.example.charging_life.board.dto;
 
 import com.example.charging_life.board.entity.Board;
 import com.example.charging_life.board.entity.Category;
+import com.example.charging_life.file.entity.File;
 import com.example.charging_life.member.entity.Auth;
 import com.example.charging_life.member.entity.Member;
 import com.example.charging_life.station.entity.ChargingStation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +25,7 @@ public class BoardDto {
     private Optional<StationDto> chargingStation;
     private Integer cntComments;
     private int visit;
-    private List<Long> fileId;
+    private List<Long> fileId = new ArrayList<>();
     private String creationDateTime;
 
     public BoardDto(Board board) {
@@ -36,6 +38,10 @@ public class BoardDto {
         this.chargingStation = Optional.of(new StationDto(board.getChargingStation()));
         this.cntComments = board.getComments().size();
         this.visit = board.getVisit();
+        List<File> files = board.getFiles();
+        for (File file : files) {
+            this.fileId.add(file.getId());
+        }
         this.creationDateTime = board.getCreationDateTime();
     }
 
