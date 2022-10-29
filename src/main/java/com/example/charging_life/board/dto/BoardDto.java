@@ -5,6 +5,8 @@ import com.example.charging_life.board.entity.Category;
 import com.example.charging_life.file.entity.File;
 import com.example.charging_life.member.entity.Auth;
 import com.example.charging_life.member.entity.Member;
+import com.example.charging_life.station.dto.ChargingStationDto;
+import com.example.charging_life.station.entity.Charger;
 import com.example.charging_life.station.entity.ChargingStation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -62,12 +64,14 @@ public class BoardDto {
 
     @Getter
     private class StationDto {
+        private Long id;
         private String statId;
         private String statNm;
         private Double lat;
         private Double lng;
 
         public StationDto(ChargingStation chargingStation) {
+            this.id = chargingStation != null ? chargingStation.getId() : null;
             this.statId = chargingStation != null ? chargingStation.getStatId() : null;
             this.statNm = chargingStation != null ?  chargingStation.getStatNm() : null;
             this.lat = chargingStation != null ? chargingStation.getLat() : null;

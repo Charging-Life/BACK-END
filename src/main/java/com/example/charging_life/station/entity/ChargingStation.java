@@ -35,7 +35,7 @@ public class ChargingStation {
     private String limitDetail;
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "zcode_id") @JsonIgnore
     private Zcode zcode;
-    @OneToMany(mappedBy = "chargingStation")
+    @OneToMany(mappedBy = "chargingStation") @JsonIgnore
     private List<Board> boards = new ArrayList<>();
 
     @Builder
