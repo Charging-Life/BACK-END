@@ -34,6 +34,13 @@ public class MemberController {
         carService.enrollCar(memberRequestDto.getCar(), member);
     }
 
+    @Operation(summary = "회원 탈퇴")
+    @DeleteMapping("/member")
+    public void deleteMember(@RequestHeader(name = "Authorization") String accessToken) {
+        Member member = findMemberByToken(accessToken);
+        memberService.drop(member);
+    }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "관리자 전용 회원 가입", description = "회사 계정을 등록할 때 사용한다.")
     @PostMapping("/member/company")
