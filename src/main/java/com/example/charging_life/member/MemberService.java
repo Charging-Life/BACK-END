@@ -102,4 +102,9 @@ public class MemberService implements UserDetailsService {
         ChargingStation station = jpaStationRepository.findByStatId(statId);
         jpaMemberDestinationRepo.deleteByChargingStationAndMember(station,member);
     }
+
+    @Transactional
+    public void drop(Member member) {
+        jpaMemberRepo.delete(member);
+    }
 }

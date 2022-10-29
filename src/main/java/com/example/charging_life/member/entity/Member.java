@@ -26,11 +26,11 @@ public class Member implements UserDetails {
     private String phone;
     @Enumerated(value = EnumType.STRING)
     private Auth auth;
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member" , cascade = CascadeType.REMOVE)
     private List<Car> cars = new ArrayList<>();
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<MemberBusiness> businesses = new ArrayList<>();
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<MemberChargingStation> memberChargingStations = new ArrayList<>();
 
 
