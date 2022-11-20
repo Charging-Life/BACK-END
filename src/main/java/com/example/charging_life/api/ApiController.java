@@ -1,6 +1,7 @@
 package com.example.charging_life.api;
 
-import com.example.charging_life.station.StationService;
+
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
+@Hidden
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-
 @Tag(name = "공공데이터 save API" , description = "<공공 api 받아오는 API>" + "\n\n" +
         "⏰ 매주 금요일 5:00 AM 마다 새로운 충전소의 공공 api를 Business 데이터베이스에 저장 " + "\n\n" +
         "⏰ 매주 금요일 5:30 AM 마다 새로운 충전소의 공공 api를 ChargingStation & Charger 데이터베이스에 저장" + "\n\n" +
